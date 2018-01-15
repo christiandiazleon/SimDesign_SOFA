@@ -383,8 +383,9 @@ int main(int argc, char** argv)
         }
         else
             fileName = "Demos/caduceus.scn";*/
-        fileName = "Demos/Cystic_Scene/GynecologyScene.scn";
+        //fileName = "Demos/Cystic_Scene/GynecologyScene.scn";
         //fileName = "Demos/Cystic_Scene/ovary.scn";
+        fileName = "Demos/CNVSSPlugin/CNVSSPluginScene.scn";
 
         fileName = DataRepository.getFile(fileName);
     }
