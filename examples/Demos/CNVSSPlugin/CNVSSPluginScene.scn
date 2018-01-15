@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Node name="Root" gravity="0 0 0" time="0" animate="0">
+    <RequiredPlugin name="PlugExample" pluginName="SimDesignCNVSS"/>
+    <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields"/>
+    <Node name="parent node with independent DOFs">
+        <CNVSSTesting name="dummy component"/>
+        <Node name="child node"/>
+          <OglModel  name="UteroVisualModel" fileMesh="mesh/Utero_V2/Utero_Alone_V2.obj" />
+        </Node>
+    </Node>
+</Node>

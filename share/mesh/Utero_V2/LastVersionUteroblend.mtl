@@ -1,0 +1,14 @@
+# Blender MTL File: 'LastVersionUteroblend.blend'
+# Material Count: 1
+
+newmtl Utero_All_V2:Interior:phong4SG
+Ns 17.647059
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 6
+map_Kd /Users/labrv/Documents/Unity/FullPatient/Assets/UteroTex.jpg
+map_Bump /1
