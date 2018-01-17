@@ -1,8 +1,9 @@
-#include "ZMQServerComponent.h"
 #include <sofa/core/ObjectFactory.h>
 #include <zmq.hpp>
 #include <iostream>
 #include <string>
+#include "ZMQServerComponent.h"
+//#include "SofaTypeMessages.h"
 
 using namespace std;
 
@@ -81,9 +82,26 @@ ZMQServerComponent::~ZMQServerComponent()
 {
 }
 
-// int ZeroMqComponentClass = sofa::core::RegisterObject("This component does nothing.").add<ZeroMqComponent>();
-SOFA_DECL_CLASS(ZMQServerComponent)
-int ZMQServerComponentClass = sofa::core::RegisterObject("This component create a Socket.").add<ZMQServerComponent>();
+void ZMQServerComponent::draw(const core::visual::VisualParams *vparam)
+{
+    draw();
+}
+
+void ZMQServerComponent::draw()
+{
+    instrumentData itemp;
+    itemp.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);
+    itemp.quat = defaulttype::Quat(1.0f, 1.0f, 1.0f, 1.0f);
+    itemp.btnState = 1;
+    itemp.openInst = 1.0f;
+    itemp.blnDataReady = true;
+
+    SofaTypeMessages a = SofaTypeMessages();
+    a.instrumentDataSend(itemp);
+}
+
+        // int ZeroMqComponentClass = sofa::core::RegisterObject("This component does nothing.").add<ZeroMqComponent>();
+        SOFA_DECL_CLASS(ZMQServerComponent) int ZMQServerComponentClass = sofa::core::RegisterObject("This component create a Socket.").add<ZMQServerComponent>();
 }
 }
 }

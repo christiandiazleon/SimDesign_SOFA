@@ -1,3 +1,14 @@
+#include <sofa/core/behavior/BaseController.h>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace controller
+{
+
 class PointNet
 {
   public:
@@ -16,3 +27,9 @@ class PointNet
     float Y;
     float Z;
 };
+
+}
+
+}
+
+}

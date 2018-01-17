@@ -2,14 +2,19 @@ cmake_minimum_required(VERSION 3.1)
 project(ZeroMQCommunication)
 
 set(HEADER_FILES
-    ZMQServerComponent.h
+    initZeroMQCommunication.h
     PointNet.h
+    ZMQServerComponent.h
+    SofaTypeMessages.h
+    Client.h
 )
 
 set(SOURCE_FILES
     initZeroMQCommunication.cpp
+    PointNet.cpp
     ZMQServerComponent.cpp
-    
+    SofaTypeMessages.cpp
+    Client.cpp   
 )
 
 set(EXTRA_FILES
