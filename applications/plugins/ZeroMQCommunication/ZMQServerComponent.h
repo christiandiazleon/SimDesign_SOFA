@@ -8,8 +8,10 @@ using sofa::core::objectmodel::Data;
 #include <sofa/defaulttype/VecTypes.h>
 // using sofa::component::engine::DistanceZoneImageToolBoxNoTemplated::Vec3d
 
+// To Quat datatype
 #include <sofa/defaulttype/Quat.h>
 using sofa::defaulttype::Quat;
+
 using std::string;
 
 namespace sofa

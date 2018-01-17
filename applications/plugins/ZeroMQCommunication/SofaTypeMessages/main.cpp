@@ -3,7 +3,8 @@
 int main()
 {
     SofaTypeMessages message;
-    message.instrumentData(1, 2.5, 0);
+    Vec3d pos;
+    //message.instrumentData(1, 2.5, 0);
     return 0;
 }
 

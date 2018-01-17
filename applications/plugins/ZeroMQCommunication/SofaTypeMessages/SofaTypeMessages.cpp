@@ -8,7 +8,7 @@ SofaTypeMessages::SofaTypeMessages()
 {
 }
 
-void SofaTypeMessages::instrumentData(int btnState, float openInst, bool blnDataReady)
+void SofaTypeMessages::instrumentData(Vec3d pos, Quat quat, int btnState, float openInst, bool blnDataReady)
 {
     cout << "The data are: " << btnState;
     //instrumentData g;
