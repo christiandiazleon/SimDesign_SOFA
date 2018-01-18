@@ -10,7 +10,8 @@ namespace component
 namespace controller
 {
 
-PointNet::PointNet(){
+PointNet::PointNet()
+{
 
 }
 
