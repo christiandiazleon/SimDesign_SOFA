@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include "ZMQServerComponent.h"
-//#include "SofaTypeMessages.h"
+#include "SofaTypeMessages.h"
 
 using namespace std;
 
@@ -25,6 +25,7 @@ ZMQServerComponent::ZMQServerComponent()
 // , d_address(initData(&d_address, (std::string)"127.0.0.1", "address", "Scale for object display. (default=localhost)"))
 {
 }
+
 
 void ZMQServerComponent::receiveRequests()
 {
@@ -73,14 +74,17 @@ void ZMQServerComponent::sendReplyToClient() {
 
 void ZMQServerComponent::init()
 {
+    std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQServerComponent z;
     z.receiveRequests();
-    // z.sendReplyToClient();
+    //.sendReplyToClient();
+    //z.draw();
 }
 
 ZMQServerComponent::~ZMQServerComponent()
 {
 }
+
 
 void ZMQServerComponent::draw(const core::visual::VisualParams *vparam)
 {
@@ -88,7 +92,8 @@ void ZMQServerComponent::draw(const core::visual::VisualParams *vparam)
 }
 
 void ZMQServerComponent::draw()
-{
+{   
+    
     instrumentData itemp;
     itemp.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);
     itemp.quat = defaulttype::Quat(1.0f, 1.0f, 1.0f, 1.0f);
@@ -98,10 +103,16 @@ void ZMQServerComponent::draw()
 
     SofaTypeMessages a = SofaTypeMessages();
     a.instrumentDataSend(itemp);
+    
 }
 
-        // int ZeroMqComponentClass = sofa::core::RegisterObject("This component does nothing.").add<ZeroMqComponent>();
-        SOFA_DECL_CLASS(ZMQServerComponent) int ZMQServerComponentClass = sofa::core::RegisterObject("This component create a Socket.").add<ZMQServerComponent>();
-}
-}
-}
+
+// int ZeroMqComponentClass = sofa::core::RegisterObject("This component does nothing.").add<ZeroMqComponent>();
+SOFA_DECL_CLASS(ZMQServerComponent)
+
+int ZMQServerComponentClass = sofa::core::RegisterObject("This component create a Socket.").add< ZMQServerComponent >();
+} // namespace controller
+
+} // namespace component
+
+} // namespace sofa

@@ -6,7 +6,7 @@
 // using sofa::core::objectmodel::Data;
 
 #include <sofa/defaulttype/VecTypes.h>
-#include "SofaTypeMessages.h"
+// #include "SofaTypeMessages.h"
 
 // To Quat datatype
 #include <sofa/defaulttype/Quat.h>
@@ -36,7 +36,7 @@ class ZMQServerComponent : public sofa::core::behavior::BaseController
     ZMQServerComponent();
     virtual ~ZMQServerComponent();
     void receiveRequests();
-    void sendReplyToClient();
+    //void sendReplyToClient();
     void init();
 
     virtual void draw();
