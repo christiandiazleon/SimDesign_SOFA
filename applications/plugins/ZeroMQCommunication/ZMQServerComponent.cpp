@@ -51,7 +51,7 @@ void ZMQServerComponent::sendGreetings()
 
 void ZMQServerComponent::getResponseFromServer()
 {
-    string replyMessage;
+    
     zmq::message_t reply;
     socket.recv(&reply);
 

@@ -55,6 +55,7 @@ class ZMQServerComponent : public sofa::core::behavior::BaseController
 
   private:
     struct timeval t_before, t_after;
+    string replyMessage;
 };
 
 
