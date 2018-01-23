@@ -22,6 +22,7 @@ SofaTypeMessages::SofaTypeMessages()
 void SofaTypeMessages::instrumentDataSend(instrumentData a)
 {
     cout << "The data are: " << a.btnState;
+    cout << "The data are: " << a.openInst;
 
     //a.btn
     //instrumentData g;

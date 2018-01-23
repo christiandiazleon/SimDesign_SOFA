@@ -16,17 +16,55 @@ namespace component
 namespace controller
 {
 
+/* variables para ZMQ Internal Server */
+// zmq::context_t context(1);
+// zmq::socket_t socket(context, ZMQ_REP);
+
+/* variables para ZMQ Internal Client */
 zmq::context_t context(1);
-zmq::socket_t socket(context, ZMQ_REP);
+zmq::socket_t socket(context, ZMQ_REQ);
+
+
 
 ZMQServerComponent::ZMQServerComponent()
 // : myparam(initData(&myparam, 0.42, "myparam", "ZeroMq version plugin. "))
 // : myparam(initData(&myparam, (double)(0.42), "myparam", "ZeroMq version plugin. "))
 // , d_address(initData(&d_address, (std::string)"127.0.0.1", "address", "Scale for object display. (default=localhost)"))
 {
+    
 }
 
 
+void ZMQServerComponent::setupConnection()
+{
+    cout << "Connecting to python zeroMQ server ..." << endl;
+    socket.connect("tcp://localhost:5555");
+}
+
+void ZMQServerComponent::sendGreetings()
+{
+    gettimeofday(&t_before, NULL);
+    zmq::message_t request(33);
+    memcpy(request.data(), "Hello Python Server, how are you?", 33);
+    socket.send(request);
+}
+
+void ZMQServerComponent::getResponseFromServer()
+{
+    string replyMessage;
+    zmq::message_t reply;
+    socket.recv(&reply);
+
+    replyMessage = string(static_cast<char *>(reply.data()), reply.size());
+    cout << "Getting response from server: " + replyMessage << " " << endl;
+
+    gettimeofday(&t_after, NULL);
+
+    printf("Time in microseconds: %ld microseconds\n",
+           ((t_after.tv_sec - t_before.tv_sec) * 1000000L + t_before.tv_usec) - t_before.tv_usec);
+}
+
+/*
 void ZMQServerComponent::receiveRequests()
 {
     cout << "Creating socket zeroMQ ..." << endl;
@@ -59,7 +97,6 @@ void ZMQServerComponent::receiveRequests()
     }
 }
 
-/*
 void ZMQServerComponent::sendReplyToClient() {
     // std::string s=myparam.getValue()
     std::string messageStr="Hello Client, my version is: ";
@@ -76,9 +113,14 @@ void ZMQServerComponent::init()
 {
     std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQServerComponent z;
-    z.receiveRequests();
+    z.setupConnection();
+    z.sendGreetings();
+    z.getResponseFromServer();
+
+
+    //z.receiveRequests();
     //.sendReplyToClient();
-    //z.draw();
+    z.draw();
 }
 
 ZMQServerComponent::~ZMQServerComponent()
@@ -97,7 +139,7 @@ void ZMQServerComponent::draw()
     instrumentData itemp;
     itemp.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);
     itemp.quat = defaulttype::Quat(1.0f, 1.0f, 1.0f, 1.0f);
-    itemp.btnState = 1;
+    itemp.btnState = 5671;
     itemp.openInst = 1.0f;
     itemp.blnDataReady = true;
 

@@ -1,6 +1,5 @@
 #include "Client.h"
 #include <zmq.hpp>
-
 using namespace std;
 
 zmq::context_t context(1);
