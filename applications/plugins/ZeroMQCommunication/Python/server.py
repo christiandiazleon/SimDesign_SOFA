@@ -12,12 +12,15 @@ import zmq
 context = zmq.Context()
 socket = context.socket(zmq.REP)
 socket.bind("tcp://*:5555")
+print('ZMQ Server listening ... ')
 
 while True:
     #  Wait for next request from client
     message = socket.recv()
     # instant = time()
-    print("Received message from C++: %s" % message,)
+   
+    # print("Received message from Sofa: {}".format(message))
+    print("Received message from c++ %s" % str(message))
 
     #print("Mensaje recibido desde C++: %s" % message, "in: %s" %
     #      datetime.datetime.now().microsecond)
@@ -30,5 +33,5 @@ while True:
     time.sleep(1)
 
     #  Send reply back to client
-    socket.send(b"Hi C++ client fine and you?")
+    # socket.send(b"Hola cliente, muy bien y tu ?")
     # print('Response sent')

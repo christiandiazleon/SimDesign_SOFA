@@ -4,8 +4,11 @@
 #include <sofa/core/behavior/BaseController.h>
 // typedef sofa::defaulttype::Vec3d Vec3d;
 
+#include <string>
+
 // To Quat datatype
 #include <sofa/defaulttype/Quat.h>
+using namespace std;
 using std::string;
 
 namespace sofa
@@ -29,6 +32,8 @@ struct instrumentData
   int btnState;
   float openInst;
   bool blnDataReady;
+  // const int size = 10;
+  // string nameInstrument;
 };
 
 struct attachingData
@@ -106,6 +111,7 @@ class SofaTypeMessages
 
 public:
   SofaTypeMessages();
+  void test();
   void instrumentDataSend(instrumentData a);
   void attachingData();
   void probingData();

@@ -23,14 +23,25 @@ namespace component
 namespace controller
 {
 
+struct instrumentData
+{
+  typedef sofa::defaulttype::Vec3d Vec3d;
+  Vec3d pos;
+  Quat quat;
+  int btnState;
+  float openInst;
+  bool blnDataReady;
+  string name;
+};
+
 class ZMQServerComponent : public sofa::core::behavior::BaseController
 {
   public:
     SOFA_CLASS(ZMQServerComponent, sofa::core::behavior::BaseController);
     // Data<double> myparam;
-    Data<std::string> d_address;
-    typedef sofa::defaulttype::Vec3d Vec3d;
-    typedef defaulttype::Quat Quat;
+    // Data<std::string> d_address;
+    // typedef sofa::defaulttype::Vec3d Vec3d;
+    //typedef defaulttype::Quat Quat;
     
 
     ZMQServerComponent();
@@ -40,7 +51,8 @@ class ZMQServerComponent : public sofa::core::behavior::BaseController
     void setupConnection();
 
     /* Send some data to ZMQ external Server  */
-    void sendGreetings();
+    void instrumentDataSend(instrumentData a);
+
 
     /* Get some response from ZMQ external Server */
     void getResponseFromServer();
@@ -60,5 +72,7 @@ class ZMQServerComponent : public sofa::core::behavior::BaseController
 
 
 }
+
 }
+
 }
