@@ -21,6 +21,7 @@ while True:
    
     # print("Received message from Sofa: {}".format(message))
     print("Received message from c++ %s" % str(message))
+    #print("Received message from C++: %s" % message,) 
 
     #print("Mensaje recibido desde C++: %s" % message, "in: %s" %
     #      datetime.datetime.now().microsecond)
@@ -33,5 +34,5 @@ while True:
     time.sleep(1)
 
     #  Send reply back to client
-    # socket.send(b"Hola cliente, muy bien y tu ?")
+    socket.send(b"Hola cliente, muy bien y tu ?")
     # print('Response sent')
