@@ -47,19 +47,32 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     
     a.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);
     a.quat = defaulttype::Quat(1.0f, 1.0f, 4.0f, 1.0f);
-    a.btnState = 5671;
+    a.btnState = 45;
     a.openInst = 1.0f;
     a.blnDataReady = false;
     /// a.name = '';
+
+    // ***************** btnState ***********************
+    string s, test, result, d;
+    s = to_string(a.btnState);
+    test = " is a number";
+    result = s + test;
+    int *ptrResult = &a.btnState;
+    cout << "Mostrando btnState: " << *ptrResult << endl;
     
-    gettimeofday(&t_before, NULL);
-    zmq::message_t request(10);
-    cout << "The data are: " << a.blnDataReady;
+    d = to_string(*ptrResult);
+    cout << "dd" << d << endl;
 
-    memcpy(request.data(), &a.blnDataReady, 10);
+    // gettimeofday(&t_before, NULL);
+    zmq::message_t request(result.size());
+    cout << "btnState is : " << a.btnState << endl;
+    cout << "btnState concatenate is: " << result << endl;
+    cout << "btnState concatenate with & is: " << &result << endl;
+    // ***************** btnState ***********************
+    memcpy(request.data(), result.c_str(), result.size() + 1);
     socket.send(request);
+    cout << "String btnState " << result << " sent to ZMQ Server" << endl;
 }
-
 
 void ZMQServerComponent::getResponseFromServer()
 {
@@ -84,8 +97,8 @@ void ZMQServerComponent::init()
 
     instrumentData itemp;
     z.instrumentDataSend(itemp);
-    z.getResponseFromServer();
-    z.draw();
+    //z.getResponseFromServer();
+    //z.draw();
     
 }
 

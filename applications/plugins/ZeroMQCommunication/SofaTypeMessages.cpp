@@ -22,7 +22,7 @@ SofaTypeMessages::SofaTypeMessages()
 }
 
 //void SofaTypeMessages::instrumentData(Vec3d pos, Quat quat, int btnState, float openInst, bool blnDataReady)
-
+/*
 void SofaTypeMessages::instrumentDataSend(instrumentData a)
 {
     // zmq::context_t context(1);
@@ -46,7 +46,7 @@ void SofaTypeMessages::instrumentDataSend(instrumentData a)
     //instrumentData g;
     //a= g.pos
 }
-
+*/
 
 }
 

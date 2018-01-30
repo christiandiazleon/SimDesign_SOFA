@@ -19,9 +19,9 @@ while True:
     message = socket.recv()
     # instant = time()
    
-    # print("Received message from Sofa: {}".format(message))
-    print("Received message from c++ %s" % str(message))
-    #print("Received message from C++: %s" % message,) 
+    print("Received message from Sofa: {}".format(message))
+    # print("Received message from c++ %s" % str(message))
+    # print("Received message from C++: %s" % message,) 
 
     #print("Mensaje recibido desde C++: %s" % message, "in: %s" %
     #      datetime.datetime.now().microsecond)

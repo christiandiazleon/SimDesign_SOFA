@@ -24,17 +24,6 @@ namespace controller
 typedef defaulttype::Quat Quat;
 //typedef sofa::defaulttype::Quatd;
 
-struct instrumentData
-{
-  typedef sofa::defaulttype::Vec3d Vec3d;
-  Vec3d pos;
-  Quat quat;
-  int btnState;
-  float openInst;
-  bool blnDataReady;
-  // const int size = 10;
-  // string nameInstrument;
-};
 
 struct attachingData
 {
@@ -112,7 +101,7 @@ class SofaTypeMessages
 public:
   SofaTypeMessages();
   void test();
-  void instrumentDataSend(instrumentData a);
+  //void instrumentDataSend(instrumentData a);
   void attachingData();
   void probingData();
   void attachClipData1();

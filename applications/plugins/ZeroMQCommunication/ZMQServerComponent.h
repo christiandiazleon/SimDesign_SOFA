@@ -31,7 +31,6 @@ struct instrumentData
   int btnState;
   float openInst;
   bool blnDataReady;
-  string name;
 };
 
 class ZMQServerComponent : public sofa::core::behavior::BaseController
