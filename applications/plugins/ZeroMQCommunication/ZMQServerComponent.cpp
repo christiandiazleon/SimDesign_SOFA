@@ -1,5 +1,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <zmq.hpp>
+#include <zmqpp/zmqpp.hpp>
 #include <iostream>
 #include <string>
 #include "ZMQServerComponent.h"
@@ -25,7 +26,13 @@ namespace controller
 zmq::context_t context(1);
 zmq::socket_t socket(context, ZMQ_REQ);
 
+/*  initialize the 0MQ context
+zmqpp::context context;
 
+// generate a push socket
+zmqpp::socket_type type = zmqpp::socket_type::push;
+zmqpp::socket socket(context, type);
+*/
 
 ZMQServerComponent::ZMQServerComponent()
 // : myparam(initData(&myparam, 0.42, "myparam", "ZeroMq version plugin. "))
@@ -38,8 +45,9 @@ ZMQServerComponent::ZMQServerComponent()
 
 void ZMQServerComponent::setupConnection()
 {
-    cout << "Connecting to python zeroMQ server ..." << endl;
-    socket.connect("tcp://localhost:5555");
+    const string endpoint = "tcp://localhost:5555";
+    cout << "Connecting to python zeroMQ server" << endpoint << "..." << endl;
+    socket.connect(endpoint);
 }
 
 void ZMQServerComponent::instrumentDataSend(instrumentData a)
@@ -50,28 +58,35 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     a.btnState = 45;
     a.openInst = 1.0f;
     a.blnDataReady = false;
-    /// a.name = '';
 
     // ***************** btnState ***********************
-    string s, test, result, d;
-    s = to_string(a.btnState);
-    test = " is a number";
-    result = s + test;
-    int *ptrResult = &a.btnState;
-    cout << "Mostrando btnState: " << *ptrResult << endl;
     
-    d = to_string(*ptrResult);
-    cout << "dd" << d << endl;
+    //string s, test, result, d, s2, s3;
+    string btnState,  allData, posVector0;
+    posVector0 = to_string(a.pos[0]);
+    cout << posVector0;
 
+    btnState = to_string(a.btnState);
+    // s2  = to_string(a.openInst);
+    
+    // test = " is a number";
+    // result = s + test;
+    
+    /*
+    zmqpp::message message;
+    message << "Hello World!" << 42;
+    */
     // gettimeofday(&t_before, NULL);
-    zmq::message_t request(result.size());
+    zmq::message_t request(posVector0.size());
     cout << "btnState is : " << a.btnState << endl;
-    cout << "btnState concatenate is: " << result << endl;
-    cout << "btnState concatenate with & is: " << &result << endl;
+    // cout << "btnState concatenate is: " << result << endl;
+    // cout << "btnState concatenate with & is: " << &result << endl;
+    
     // ***************** btnState ***********************
-    memcpy(request.data(), result.c_str(), result.size() + 1);
+    memcpy(request.data(), posVector0.c_str(), posVector0.size() + 1);
     socket.send(request);
-    cout << "String btnState " << result << " sent to ZMQ Server" << endl;
+    // socket.send(message);
+    // cout << "String btnState " << result << " sent to ZMQ Server" << endl;
 }
 
 void ZMQServerComponent::getResponseFromServer()
