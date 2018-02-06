@@ -30,3 +30,5 @@ install(TARGETS ZeroMQCommunication
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
+
+
