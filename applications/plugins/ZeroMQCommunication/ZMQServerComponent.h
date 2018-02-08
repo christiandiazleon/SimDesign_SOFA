@@ -1,6 +1,7 @@
 #include <sofa/core/behavior/BaseController.h>
 #include <zmq.hpp>
 #include <sys/time.h>
+#include "PointNet.h"
 
 // #include <sofa/core/objectmodel/Data.h>
 // using sofa::core::objectmodel::Data;
@@ -33,6 +34,19 @@ struct instrumentData
   bool blnDataReady;
 };
 
+struct attachingData
+{
+  std::vector<PointNet> vPointsAttach;
+  std::vector<int> vIdTriangles;
+  std::vector<int> vIdInstTriangles;
+  string strMechanicalModel;
+  string strSurfaceModel;
+  int nContactPoints;
+  bool blnAttachContact;
+  bool blnDeAtacchContact;
+  float fDist;
+};
+
 class ZMQServerComponent : public sofa::core::behavior::BaseController
 {
   public:
@@ -51,6 +65,7 @@ class ZMQServerComponent : public sofa::core::behavior::BaseController
 
     /* Send some data to ZMQ external Server  */
     void instrumentDataSend(instrumentData a);
+    void attachingDataToSend(attachingData b);
 
 
     /* Get some response from ZMQ external Server */

@@ -25,18 +25,7 @@ typedef defaulttype::Quat Quat;
 //typedef sofa::defaulttype::Quatd;
 
 
-struct attachingData
-{
-  std::vector<PointNet> vPointsAttach;
-  std::vector<int> vIdTriangles;
-  std::vector<int> vIdInstTriangles;
-  string strMechanicalModel;
-  string strSurfaceModel;
-  int nContactPoints;
-  bool blnAttachContact;
-  bool blnDeAtacchContact;
-  float fDist;
-};
+
 
 struct probingData
 {

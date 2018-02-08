@@ -93,7 +93,8 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     /* Concatenating all quatQuat elements */
     allQuatQuat = quatQuat0 + " " + quatQuat1 + " " + quatQuat2 + " " + quatQuat3 + " -> quatQuat elements";
 
-    allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + "\n " + " " + blnDataReadyStr;
+    /* Grouping instrumentDataStr */
+    allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " " + blnDataReadyStr;
     cout << "instrumentData members sent \n"
          << "Variable\tValue\n\n";
     cout << "posVector 0" << "\t" << a.pos[0] <<endl;
@@ -119,12 +120,28 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     //memcpy(request.data(), posVector0.c_str(), posVector0.size() + 1);
     //memcpy(request.data(), result.c_str(), result.size() + 1);
     //std::copy_n(reinterpret_cast<char *>(request.data()), result.size(), result.c_str());
-    std::copy_n(allInstrumentData.c_str(), allInstrumentData.size() + 1, reinterpret_cast<char *>(request.data()));
+    std::copy_n(allInstrumentData.c_str(), allInstrumentData.size(), reinterpret_cast<char *>(request.data()));
     //std::copy_n(result.c_str(), result.size() + 1, request.data());
     socket.send(request);
-    //socket.send(message);
-    // cout << "String btnState " << result << " sent to ZMQ Server" << endl;
 }
+
+void ZMQServerComponent::attachingDataToSend(attachingData b)
+{
+    string vIdTrianglesStr0;
+    
+    b.vIdTriangles = {1, 2, 3, 4};
+    int total = 0;
+    total = b.vIdTriangles[0] + b.vIdTriangles[1] + b.vIdTriangles[2] + b.vIdTriangles[3];
+    cout << "The first element of vIdTriangles is: " << b.vIdTriangles[3] << endl;
+    cout << "The total of elements is: " << total << endl;
+    vIdTrianglesStr0 = to_string(b.vIdTriangles[0]);
+
+    /* Sending data with ZMQ */
+    zmq::message_t request(vIdTrianglesStr0.size());
+    std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
+    socket.send(request);
+}
+
 /*
 void ZMQServerComponent::getResponseFromServer()
 {
@@ -147,8 +164,11 @@ void ZMQServerComponent::init()
     ZMQServerComponent z;
     z.setupConnection();
 
-    instrumentData itemp;
-    z.instrumentDataSend(itemp);
+    //instrumentData itemp;
+    //z.instrumentDataSend(itemp);
+
+    attachingData n;
+    z.attachingDataToSend(n);
     //z.getResponseFromServer();
     //z.draw();
     

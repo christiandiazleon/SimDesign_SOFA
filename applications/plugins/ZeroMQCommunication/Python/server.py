@@ -20,6 +20,10 @@ while True:
     # instant = time()
    
     print("Received message from Sofa: {}".format(message))
+
+    print("Splitting message")
+    x = message.split()
+    print (x)
     # print("Received message from c++ %s" % str(message))
     # print("Received message from C++: %s" % message,) 
 
