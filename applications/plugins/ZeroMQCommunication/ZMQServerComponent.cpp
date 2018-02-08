@@ -66,33 +66,60 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
 
     // ***************** btnState ***********************
     
-    string s, test, result;
-    string btnState, allData, posVector0, quatQuat2;
-    posVector0 = to_string(a.pos[0]);
-    quatQuat2 = to_string(a.quat[2]);
-    cout << posVector0;
+    /* Strings to store instrumentData members */
+    string posVector0, posVector1, posVector2, allPosVector, 
+        quatQuat0, quatQuat1, quatQuat2, quatQuat3, allQuatQuat,
+        btnStateStr, openInstStr, blnDataReadyStr, allInstrumentData;
 
-    btnState = to_string(a.btnState);
-    s  = to_string(a.openInst);
-    
-    test = " is a number";
-    result = s + test;
-    
-    
-    //zmqpp::message message;
-    //message << "Hello World!" << 42;
-    
+    // ******* Turn to strings Vec3d pos contents*********
+    posVector0 = to_string(a.pos[0]);
+    posVector1 = to_string(a.pos[1]);
+    posVector2 = to_string(a.pos[2]);
+
+    // ******* Turn to strings Quat quat contents*********
+    quatQuat0 = to_string(a.quat[0]);
+    quatQuat1 = to_string(a.quat[1]);
+    quatQuat2 = to_string(a.quat[2]);
+    quatQuat3 = to_string(a.quat[3]);
+
+    /* Other instrumentData */
+    btnStateStr = to_string(a.btnState);
+    openInstStr = to_string(a.openInst);
+    blnDataReadyStr = to_string(a.blnDataReady);
+
+    /* Concatenating all posVector elements */
+    allPosVector = posVector0 + " " + posVector1 + " " + posVector2 + " -> posVector3D elements";
+
+    /* Concatenating all quatQuat elements */
+    allQuatQuat = quatQuat0 + " " + quatQuat1 + " " + quatQuat2 + " " + quatQuat3 + " -> quatQuat elements";
+
+    allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + "\n " + " " + blnDataReadyStr;
+    cout << "instrumentData members sent \n"
+         << "Variable\tValue\n\n";
+    cout << "posVector 0" << "\t" << a.pos[0] <<endl;
+    cout << "posVector 1" << "\t" << a.pos[1] <<endl;
+    cout << "posVector 2" << "\t" << a.pos[2] <<endl;
+    cout << endl;
+    cout << "quatQuat 0" << "\t" << a.quat[0] << endl;
+    cout << "quatQuat 1" << "\t" << a.quat[1] << endl;
+    cout << "quatQuat 2" << "\t" << a.quat[2] << endl;
+    cout << "quatQuat 3" << "\t" << a.quat[3] << endl;
+    cout << endl;
+    cout << "btnState" << "\t" << a.btnState << endl << endl;
+    cout << "openInst" << "\t" << a.openInst <<endl << endl;
+    cout << "blnDataReady"<< "\t" << a.blnDataReady << endl;
+
     // gettimeofday(&t_before, NULL);
-    zmq::message_t request(quatQuat2.size() + 1);
+    // zmq::message_t request(blnDataReadyStr.size() + 1);
+    zmq::message_t request(allInstrumentData.size());
     cout << "btnState is : " << a.btnState << endl;
-    // cout << "btnState concatenate is: " << result << endl;
-    // cout << "btnState concatenate with & is: " << &result << endl;
-    
+    cout << "blnDataReady is : " << a.blnDataReady << endl;
+
     // ***************** btnState ***********************
     //memcpy(request.data(), posVector0.c_str(), posVector0.size() + 1);
     //memcpy(request.data(), result.c_str(), result.size() + 1);
     //std::copy_n(reinterpret_cast<char *>(request.data()), result.size(), result.c_str());
-    std::copy_n(quatQuat2.c_str(), quatQuat2.size() + 1, reinterpret_cast<char *>(request.data()));
+    std::copy_n(allInstrumentData.c_str(), allInstrumentData.size() + 1, reinterpret_cast<char *>(request.data()));
     //std::copy_n(result.c_str(), result.size() + 1, request.data());
     socket.send(request);
     //socket.send(message);
