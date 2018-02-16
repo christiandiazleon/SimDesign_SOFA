@@ -55,6 +55,13 @@ void ZMQServerComponent::setupConnection()
     socket.connect(endpoint);
 }
 
+void ZMQServerComponent::setupConnectionAttachingData()
+{
+    const string endpoint2 = "tcp://localhost:5556";
+    cout << "Connecting to python zeroMQ server" << endpoint2 << "..." << endl;
+    socket.connect(endpoint2);
+}
+
 void ZMQServerComponent::instrumentDataSend(instrumentData a)
 {
     
@@ -111,19 +118,20 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     cout << "blnDataReady"<< "\t" << a.blnDataReady << endl;
 
     // gettimeofday(&t_before, NULL);
-    // zmq::message_t request(blnDataReadyStr.size() + 1);
-    zmq::message_t request(allInstrumentData.size());
+    
+    zmq::message_t request(allInstrumentData.size()+1);
     cout << "btnState is : " << a.btnState << endl;
     cout << "blnDataReady is : " << a.blnDataReady << endl;
 
     // ***************** btnState ***********************
-    //memcpy(request.data(), posVector0.c_str(), posVector0.size() + 1);
     //memcpy(request.data(), result.c_str(), result.size() + 1);
     //std::copy_n(reinterpret_cast<char *>(request.data()), result.size(), result.c_str());
-    std::copy_n(allInstrumentData.c_str(), allInstrumentData.size(), reinterpret_cast<char *>(request.data()));
+    std::copy_n(allInstrumentData.c_str(), allInstrumentData.size()+1, reinterpret_cast<char *>(request.data()));
     //std::copy_n(result.c_str(), result.size() + 1, request.data());
     socket.send(request);
+    
 }
+
 
 void ZMQServerComponent::attachingDataToSend(attachingData b)
 {
@@ -136,10 +144,15 @@ void ZMQServerComponent::attachingDataToSend(attachingData b)
     cout << "The total of elements is: " << total << endl;
     vIdTrianglesStr0 = to_string(b.vIdTriangles[0]);
 
+    
+
     /* Sending data with ZMQ */
     zmq::message_t request(vIdTrianglesStr0.size());
+    // tener en cuenta esto http://zguide.zeromq.org/page:all#A-Minor-Note-on-Strings
+
     std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
     socket.send(request);
+    
 }
 
 /*
@@ -163,10 +176,11 @@ void ZMQServerComponent::init()
     std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQServerComponent z;
     z.setupConnection();
-
-    //instrumentData itemp;
+    instrumentData itemp;
     //z.instrumentDataSend(itemp);
 
+    
+    //z.setupConnectionAttachingData();
     attachingData n;
     z.attachingDataToSend(n);
     //z.getResponseFromServer();
@@ -200,8 +214,7 @@ void ZMQServerComponent::draw()
 
     // SofaTypeMessages a;
     // a.instrumentDataSend(itemp);
-    
-    
+      
 }
 
 

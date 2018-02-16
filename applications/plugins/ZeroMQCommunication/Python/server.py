@@ -12,6 +12,8 @@ import zmq
 context = zmq.Context()
 socket = context.socket(zmq.REP)
 socket.bind("tcp://*:5555")
+# socket.bind("tcp://*:5556")
+#  socket.bind("tcp://*:5557")
 print('ZMQ Server listening ... ')
 
 while True:
@@ -19,21 +21,13 @@ while True:
     message = socket.recv()
     # instant = time()
    
-    print("Received message from Sofa: {}".format(message))
+    print("Received message from SOFA: {}".format(message))
+    #print("Received message from SOFA: %s" % message)
 
     print("Splitting message")
     x = message.split()
     print (x)
-    # print("Received message from c++ %s" % str(message))
-    # print("Received message from C++: %s" % message,) 
-
-    #print("Mensaje recibido desde C++: %s" % message, "in: %s" %
-    #      datetime.datetime.now().microsecond)
-
-    # print(hex(id(message)))
-    # print(ctypes.addressof(message))
-    #print('hi')
-
+    
     #  Do some 'work'
     time.sleep(1)
 
