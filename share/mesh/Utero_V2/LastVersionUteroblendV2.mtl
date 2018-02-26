@@ -10,5 +10,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 6
-map_Kd /Users/labrv/Documents/Unity/FullPatient/Assets/UteroTex.jpg
-#map_Bump /Users/labrv/Documents/ChristianDocs/SOFA/sofa_v17_06/sofa/v17.06/src/share/UteroNormal.jpg
+map_Kd UteroTex.jpg
+#map_Bump UteroNormal.jpg
