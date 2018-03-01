@@ -62,7 +62,7 @@ class ZMQServerComponent : public sofa::core::behavior::BaseController
     
     /* Conect to ZMQ external Server  */
     void setupConnection();
-    void setupConnectionAttachingData();
+    // void setupConnectionAttachingData();
 
     /* Send some data to ZMQ external Server  */
     void instrumentDataSend(instrumentData a);

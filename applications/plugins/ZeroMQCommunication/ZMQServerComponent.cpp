@@ -1,9 +1,10 @@
 #include <sofa/core/ObjectFactory.h>
-#include <zmq.hpp>
-#include <zmq.h>
+
+
+#include "zhelpers.hpp"
 #include <algorithm>
 #include <iterator>
-#include <zmqpp.hpp>
+
 #include <iostream>
 #include <string>
 #include "ZMQServerComponent.h"
@@ -27,16 +28,7 @@ namespace controller
 
 /* variables para ZMQ Internal Client estas son */
 zmq::context_t context(1);
-zmq::socket_t socket(context, ZMQ_REQ);
-
-//  initialize the 0MQ context
-//zmqpp::context context;
-
-// generate a push socket
-//zmqpp::socket_type type = zmqpp::socket_type::push;
-//zmqpp::socket socket(context, type);
-
-
+zmq::socket_t requester(context, ZMQ_REQ);
 
 
 ZMQServerComponent::ZMQServerComponent()
@@ -50,17 +42,20 @@ ZMQServerComponent::ZMQServerComponent()
 
 void ZMQServerComponent::setupConnection()
 {
-    const string endpoint = "tcp://localhost:5555";
-    cout << "Connecting to python zeroMQ server" << endpoint << "..." << endl;
-    socket.connect(endpoint);
+    const string endpoint = "tcp://localhost:5559";
+    cout << "Connecting to ZMQ Network Manager " << endpoint << "..." << endl;
+    requester.connect(endpoint);
 }
 
+/*
 void ZMQServerComponent::setupConnectionAttachingData()
 {
-    const string endpoint2 = "tcp://localhost:5556";
-    cout << "Connecting to python zeroMQ server" << endpoint2 << "..." << endl;
+    const string endpoint2 = "tcp://localhost:5559";
+    cout << "Connecting to ZMQ Network Manager " << endpoint2 << "..." << endl;
     socket.connect(endpoint2);
 }
+*/
+
 
 void ZMQServerComponent::instrumentDataSend(instrumentData a)
 {
@@ -116,8 +111,6 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     cout << "btnState" << "\t" << a.btnState << endl << endl;
     cout << "openInst" << "\t" << a.openInst <<endl << endl;
     cout << "blnDataReady"<< "\t" << a.blnDataReady << endl;
-
-    // gettimeofday(&t_before, NULL);
     
     zmq::message_t request(allInstrumentData.size()+1);
     cout << "btnState is : " << a.btnState << endl;
@@ -126,13 +119,20 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     // ***************** btnState ***********************
     //memcpy(request.data(), result.c_str(), result.size() + 1);
     //std::copy_n(reinterpret_cast<char *>(request.data()), result.size(), result.c_str());
-    std::copy_n(allInstrumentData.c_str(), allInstrumentData.size()+1, reinterpret_cast<char *>(request.data()));
-    //std::copy_n(result.c_str(), result.size() + 1, request.data());
-    socket.send(request);
     
+    //std::copy_n(allInstrumentData.c_str(), allInstrumentData.size()+1, reinterpret_cast<char *>(request.data()));
+            //std::copy_n(result.c_str(), result.size() + 1, request.data());
+    //socket.send(request);
+    for (int request = 0; request < 10; request++)
+    {
+        s_send(requester, allInstrumentData);
+        string response = s_recv(requester);
+        cout << "Received reply " << request
+             << " [" << response << "]" << endl;
+    }
 }
 
-
+/*
 void ZMQServerComponent::attachingDataToSend(attachingData b)
 {
     string vIdTrianglesStr0;
@@ -146,7 +146,7 @@ void ZMQServerComponent::attachingDataToSend(attachingData b)
 
     
 
-    /* Sending data with ZMQ */
+    // Sending data with ZMQ 
     zmq::message_t request(vIdTrianglesStr0.size());
     // tener en cuenta esto http://zguide.zeromq.org/page:all#A-Minor-Note-on-Strings
 
@@ -154,6 +154,7 @@ void ZMQServerComponent::attachingDataToSend(attachingData b)
     socket.send(request);
     
 }
+*/
 
 /*
 void ZMQServerComponent::getResponseFromServer()
@@ -177,12 +178,12 @@ void ZMQServerComponent::init()
     ZMQServerComponent z;
     z.setupConnection();
     instrumentData itemp;
-    //z.instrumentDataSend(itemp);
+    z.instrumentDataSend(itemp);
 
     
     //z.setupConnectionAttachingData();
     attachingData n;
-    z.attachingDataToSend(n);
+    //z.attachingDataToSend(n);
     //z.getResponseFromServer();
     //z.draw();
     
