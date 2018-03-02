@@ -132,12 +132,12 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     }
 }
 
-/*
+
 void ZMQServerComponent::attachingDataToSend(attachingData b)
 {
     string vIdTrianglesStr0;
     
-    b.vIdTriangles = {1, 2, 3, 4};
+    b.vIdTriangles = {888, 2, 3, 4};
     int total = 0;
     total = b.vIdTriangles[0] + b.vIdTriangles[1] + b.vIdTriangles[2] + b.vIdTriangles[3];
     cout << "The first element of vIdTriangles is: " << b.vIdTriangles[3] << endl;
@@ -150,11 +150,17 @@ void ZMQServerComponent::attachingDataToSend(attachingData b)
     zmq::message_t request(vIdTrianglesStr0.size());
     // tener en cuenta esto http://zguide.zeromq.org/page:all#A-Minor-Note-on-Strings
 
-    std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
-    socket.send(request);
-    
+    //std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
+    //socket.send(request);
+    for (int request = 0; request < 10; request++)
+    {
+        s_send(requester, vIdTrianglesStr0);
+        string response = s_recv(requester);
+        cout << "Received reply " << request
+             << " [" << response << "]" << endl;
+    }
 }
-*/
+
 
 /*
 void ZMQServerComponent::getResponseFromServer()
@@ -183,7 +189,7 @@ void ZMQServerComponent::init()
     
     //z.setupConnectionAttachingData();
     attachingData n;
-    //z.attachingDataToSend(n);
+    z.attachingDataToSend(n);
     //z.getResponseFromServer();
     //z.draw();
     
