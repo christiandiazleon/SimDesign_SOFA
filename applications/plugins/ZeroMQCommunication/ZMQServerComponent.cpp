@@ -82,6 +82,9 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     /* Grouping instrumentDataStr */
     allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " " 
     + blnDataReadyStr;
+    
+    
+    /* 
     cout << "instrumentData members sent \n"
          << "Variable\tValue\n\n";
     cout << "posVector 0" << "\t" << a.pos[0] <<endl;
@@ -100,14 +103,18 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     zmq::message_t request(allInstrumentData.size()+1);
     cout << "btnState is : " << a.btnState << endl;
     cout << "blnDataReady is : " << a.blnDataReady << endl;
+    */
 
-    // ***************** btnState ***********************
+    
+    // ***************** old way of transferring data ***********************
     //memcpy(request.data(), result.c_str(), result.size() + 1);
     //std::copy_n(reinterpret_cast<char *>(request.data()), result.size(), result.c_str());
     
     //std::copy_n(allInstrumentData.c_str(), allInstrumentData.size()+1, reinterpret_cast<char *>(request.data()));
             //std::copy_n(result.c_str(), result.size() + 1, request.data());
     //socket.send(request);
+    
+    
     for (int request = 0; request < 100; request++)
     {
         s_send(requester, allInstrumentData);
