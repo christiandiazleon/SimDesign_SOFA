@@ -108,7 +108,7 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     //std::copy_n(allInstrumentData.c_str(), allInstrumentData.size()+1, reinterpret_cast<char *>(request.data()));
             //std::copy_n(result.c_str(), result.size() + 1, request.data());
     //socket.send(request);
-    for (int request = 0; request < 10; request++)
+    for (int request = 0; request < 100; request++)
     {
         s_send(requester, allInstrumentData);
         string response = s_recv(requester);
@@ -130,20 +130,20 @@ void ZMQServerComponent::attachingDataToSend(attachingData b)
     vIdTrianglesStr0 = to_string(b.vIdTriangles[0]);
 
     
-
     // Sending data with ZMQ 
     zmq::message_t request(vIdTrianglesStr0.size());
     // tener en cuenta esto http://zguide.zeromq.org/page:all#A-Minor-Note-on-Strings
 
     //std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
     //socket.send(request);
-    for (int request = 0; request < 10; request++)
-    {
-        s_send(requester, vIdTrianglesStr0);
-        string response = s_recv(requester);
-        cout << "Received reply " << request
-             << " [" << response << "]" << endl;
-    }
+    
+    s_send(requester, vIdTrianglesStr0);
+    /*
+    string response = s_recv(requester);
+    cout << "Received reply " << request
+            << " [" << response << "]" << endl;
+    */
+    
 }
 
 

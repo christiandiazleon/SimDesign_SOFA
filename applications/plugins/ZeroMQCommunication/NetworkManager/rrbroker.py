@@ -21,8 +21,6 @@ print("Creating endpoints sockets")
 # Switch messages between sockets
 while True:
     socks = dict(poller.poll())
-    message = frontend.recv_multipart()
-    print(message)
 
     if socks.get(frontend) == zmq.POLLIN:
         message = frontend.recv_multipart()
