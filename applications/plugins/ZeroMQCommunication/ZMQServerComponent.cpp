@@ -1,10 +1,7 @@
 #include <sofa/core/ObjectFactory.h>
-
-
 #include "zhelpers.hpp"
 #include <algorithm>
 #include <iterator>
-
 #include <iostream>
 #include <string>
 #include "ZMQServerComponent.h"
@@ -39,7 +36,6 @@ ZMQServerComponent::ZMQServerComponent()
     
 }
 
-
 void ZMQServerComponent::setupConnection()
 {
     const string endpoint = "tcp://localhost:5559";
@@ -47,27 +43,15 @@ void ZMQServerComponent::setupConnection()
     requester.connect(endpoint);
 }
 
-/*
-void ZMQServerComponent::setupConnectionAttachingData()
-{
-    const string endpoint2 = "tcp://localhost:5559";
-    cout << "Connecting to ZMQ Network Manager " << endpoint2 << "..." << endl;
-    socket.connect(endpoint2);
-}
-*/
-
-
 void ZMQServerComponent::instrumentDataSend(instrumentData a)
-{
-    
+{   
     a.pos = sofa::defaulttype::Vec3d(2.0f, 1.0f, 1.0f);
     a.quat = defaulttype::Quat(1.0f, 1.0f, 4.0f, 1.0f);
     a.btnState = 45;
     a.openInst = 1.0f;
     a.blnDataReady = false;
 
-    // ***************** btnState ***********************
-    
+  
     /* Strings to store instrumentData members */
     string posVector0, posVector1, posVector2, allPosVector, 
         quatQuat0, quatQuat1, quatQuat2, quatQuat3, allQuatQuat,
@@ -85,18 +69,19 @@ void ZMQServerComponent::instrumentDataSend(instrumentData a)
     quatQuat3 = to_string(a.quat[3]);
 
     /* Other instrumentData */
-    btnStateStr = to_string(a.btnState);
-    openInstStr = to_string(a.openInst);
-    blnDataReadyStr = to_string(a.blnDataReady);
+    btnStateStr = " btsState value : " + to_string(a.btnState);
+    openInstStr = " openInst value : " + to_string(a.openInst);
+    blnDataReadyStr = " blnDataReady value : " +  to_string(a.blnDataReady);
 
     /* Concatenating all posVector elements */
-    allPosVector = posVector0 + " " + posVector1 + " " + posVector2 + " -> posVector3D elements";
+    allPosVector = " -> posVector3D elements: " + posVector0 + " " + posVector1 + " " + posVector2 + " | ";
 
     /* Concatenating all quatQuat elements */
-    allQuatQuat = quatQuat0 + " " + quatQuat1 + " " + quatQuat2 + " " + quatQuat3 + " -> quatQuat elements";
+    allQuatQuat = " -> quatQuat elements: " + quatQuat0 + " " + quatQuat1 + " " + quatQuat2 + " " + quatQuat3 + " | ";
 
     /* Grouping instrumentDataStr */
-    allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " " + blnDataReadyStr;
+    allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " " 
+    + blnDataReadyStr;
     cout << "instrumentData members sent \n"
          << "Variable\tValue\n\n";
     cout << "posVector 0" << "\t" << a.pos[0] <<endl;
@@ -140,7 +125,7 @@ void ZMQServerComponent::attachingDataToSend(attachingData b)
     b.vIdTriangles = {888, 2, 3, 4};
     int total = 0;
     total = b.vIdTriangles[0] + b.vIdTriangles[1] + b.vIdTriangles[2] + b.vIdTriangles[3];
-    cout << "The first element of vIdTriangles is: " << b.vIdTriangles[3] << endl;
+    cout << "The first element of vIdTriangles is: " << b.vIdTriangles[0] << endl;
     cout << "The total of elements is: " << total << endl;
     vIdTrianglesStr0 = to_string(b.vIdTriangles[0]);
 
@@ -182,12 +167,16 @@ void ZMQServerComponent::init()
 {
     std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQServerComponent z;
+    
+    // Connecting to Nerwork Manager
     z.setupConnection();
+    
+    // Send instrument data structure members
     instrumentData itemp;
     z.instrumentDataSend(itemp);
 
-    
-    //z.setupConnectionAttachingData();
+
+    // Send attaching data
     attachingData n;
     z.attachingDataToSend(n);
     //z.getResponseFromServer();

@@ -70,7 +70,7 @@ class ZMQServerComponent : public sofa::core::behavior::BaseController
 
 
     /* Get some response from ZMQ external Server */
-    void getResponseFromServer();
+    //void getResponseFromServer();
 
     /* Initialize ZMQ Internal Server and receive some data */
     // void receiveRequests();
