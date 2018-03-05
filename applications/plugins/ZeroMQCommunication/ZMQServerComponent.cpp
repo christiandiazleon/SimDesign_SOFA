@@ -3,7 +3,7 @@
 #include <zmq.h>
 #include <algorithm>
 #include <iterator>
-#include <zmqpp.hpp>
+// #include <zmqpp.hpp>
 #include <iostream>
 #include <string>
 #include "ZMQServerComponent.h"
@@ -177,13 +177,26 @@ void ZMQServerComponent::init()
     ZMQServerComponent z;
     z.setupConnection();
     instrumentData itemp;
-    //z.instrumentDataSend(itemp);
+    z.instrumentDataSend(itemp);
 
     
     //z.setupConnectionAttachingData();
-    attachingData n;
-    z.attachingDataToSend(n);
+    
+    /**
+     * Si enviamos datos de una segunda estructura en la misma conexion
+     * el cliente crashea dado que es un soxket ZMQ_REQ entonces es sincronico,
+     * y debe esperar una confirmacion de lo primero enviado para que envie datos
+     * de la segunda estructura. Toca cambiar de modelo de Socket.
+     * 
+    */
+    //attachingData n;
+    // z.attachingDataToSend(n);
+    
+    // Aqui obtenemos la respuesta del servidor mas precisamente el socket ZMQ_REP .. 
+    // Es como un ACK de los datos. No lo necesitamos
     //z.getResponseFromServer();
+
+    //Un ejemplo para un evento con objetos SOFA
     //z.draw();
     
 }
