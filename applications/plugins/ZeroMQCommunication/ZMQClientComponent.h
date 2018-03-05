@@ -47,18 +47,18 @@ struct attachingData
   float fDist;
 };
 
-class ZMQServerComponent : public sofa::core::behavior::BaseController
+class ZMQClientComponent : public sofa::core::behavior::BaseController
 {
   public:
-    SOFA_CLASS(ZMQServerComponent, sofa::core::behavior::BaseController);
+    SOFA_CLASS(ZMQClientComponent, sofa::core::behavior::BaseController);
     // Data<double> myparam;
     // Data<std::string> d_address;
     // typedef sofa::defaulttype::Vec3d Vec3d;
     //typedef defaulttype::Quat Quat;
     
 
-    ZMQServerComponent();
-    virtual ~ZMQServerComponent();
+    ZMQClientComponent();
+    virtual ~ZMQClientComponent();
     
     /* Conect to ZMQ external Server  */
     void setupConnection();

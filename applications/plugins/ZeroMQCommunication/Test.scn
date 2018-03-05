@@ -2,5 +2,5 @@
 <Node name="root">
     <RequiredPlugin pluginName="ZeroMQCommunication"/>
     <!--<ZMQServerComponent name="test" myparam="0.1" />-->
-    <ZMQServerComponent name="test" />
+    <ZMQClientComponent name="test" />
 </Node>

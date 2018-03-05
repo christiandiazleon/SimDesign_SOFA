@@ -1,5 +1,4 @@
 #include <iostream>
-// #include "ZMQServerComponent.h"
 #include "PointNet.h"
 #include <sofa/core/behavior/BaseController.h>
 // typedef sofa::defaulttype::Vec3d Vec3d;

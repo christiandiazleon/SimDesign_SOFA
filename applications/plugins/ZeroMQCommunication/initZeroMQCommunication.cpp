@@ -49,7 +49,7 @@ void initExternalModule()
 
 const char *getModuleName()
 {
-    return "Plugin zeroMQ Server";
+    return "Plugin zeroMQ Async Client/Server communication";
 }
 
 const char *getModuleVersion()
@@ -77,4 +77,4 @@ const char *getModuleComponentList()
 
 //}
 
-SOFA_LINK_CLASS(ZMQServerComponent)
+SOFA_LINK_CLASS(ZMQClientComponent)

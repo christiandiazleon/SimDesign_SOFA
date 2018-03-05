@@ -3,14 +3,14 @@ project(ZeroMQCommunication)
 
 set(HEADER_FILES
     initZeroMQCommunication.h
-    ZMQServerComponent.h
+    ZMQClientComponent.h
     PointNet.h
     SofaTypeMessages.h
 )
 
 set(SOURCE_FILES
     initZeroMQCommunication.cpp
-    ZMQServerComponent.cpp
+    ZMQClientComponent.cpp
     PointNet.cpp
     SofaTypeMessages.cpp
 )
