@@ -25,7 +25,8 @@ namespace controller
 
 /* variables para ZMQ Internal Client estas son */
 zmq::context_t context(1);
-zmq::socket_t requester(context, ZMQ_REQ);
+zmq::socket_t client(context, ZMQ_DEALER);
+
 
 
 ZMQClientComponent::ZMQClientComponent()
@@ -38,9 +39,9 @@ ZMQClientComponent::ZMQClientComponent()
 
 void ZMQClientComponent::setupConnection()
 {
-    const string endpoint = "tcp://localhost:5559";
+    const string endpoint = "tcp://localhost:5555";
     cout << "Connecting to ZMQ Network Manager " << endpoint << "..." << endl;
-    requester.connect(endpoint);
+    client.connect(endpoint);
 }
 
 void ZMQClientComponent::instrumentDataSend(instrumentData a)
@@ -81,6 +82,14 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
     /* Grouping instrumentDataStr */
     allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " " 
     + blnDataReadyStr;
+
+    /**
+     * Send message from ZMQ_DEALER
+     *ZMQ_SNDMORE is multipart message. --- 
+    */
+    zmq::message_t message;
+    client.send(message);
+    
     
 }
 
@@ -98,13 +107,16 @@ void ZMQClientComponent::attachingDataToSend(attachingData b)
 
     
     // Sending data with ZMQ 
-    zmq::message_t request(vIdTrianglesStr0.size());
+    
+    //zmq::message_t request(vIdTrianglesStr0.size());
+    
     // tener en cuenta esto http://zguide.zeromq.org/page:all#A-Minor-Note-on-Strings
 
     //std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
     //socket.send(request);
     
-    s_send(requester, vIdTrianglesStr0);
+    //s_send(client, vIdTrianglesStr0);
+    
     /*
     string response = s_recv(requester);
     cout << "Received reply " << request
