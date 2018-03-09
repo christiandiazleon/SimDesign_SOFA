@@ -72,7 +72,7 @@ static sofa::helper::system::atomic<int> doUpdate;
 
 int serial_fd;           //-- Serial port descriptor
 char data[CMD_LEN+1];    //-- The received command
-char path[15] = "/dev/ttyUSB1";
+char path[15] = "/dev/ttyUSB0";
 float n2 = 0.0;
 
 int SerialDriver::initDevice()
