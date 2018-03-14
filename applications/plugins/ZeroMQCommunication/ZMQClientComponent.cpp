@@ -5,6 +5,8 @@
 #include <iterator>
 #include <iostream>
 #include <string>
+#include <stdint.h>
+#include <random>
 #include "ZMQClientComponent.h"
 //#include "SofaTypeMessages.h"
 
@@ -42,7 +44,7 @@ void ZMQClientComponent::setupConnection()
 {
     const string endpoint = "tcp://localhost:5559";
 
-    // Set the identity http://api.zeromq.org/4-2:zmq-setsockopt 
+    // Set the identity http://api.zeromq.org/4-2:zmq-setsockopt
     client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);
     cout << "Connecting to ZMQ Network Manager " << endpoint << "..." << endl;
     client.connect(endpoint);
@@ -93,6 +95,7 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
     */
     //zmq::message_t message;
     //client.send(message);
+    //s_sendmore(client, "");
     s_send(client,allInstrumentData);
     
 }
@@ -119,13 +122,8 @@ void ZMQClientComponent::attachingDataToSend(attachingData b)
     //std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
     //socket.send(request);
     
-    //s_send(client, vIdTrianglesStr0);
+    s_send(client, vIdTrianglesStr0);
     
-    /*
-    string response = s_recv(requester);
-    cout << "Received reply " << request
-            << " [" << response << "]" << endl;
-    */
     
 }
 
@@ -143,8 +141,8 @@ void ZMQClientComponent::init()
 
 
     // Send attaching data
-    // attachingData n;
-    // z.attachingDataToSend(n);
+    attachingData n;
+    z.attachingDataToSend(n);
     // z.getResponseFromServer();
     // z.draw();
     
