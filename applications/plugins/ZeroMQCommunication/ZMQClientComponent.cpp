@@ -1,4 +1,5 @@
 #include <sofa/core/ObjectFactory.h>
+#include <zmq.hpp>
 #include "zhelpers.hpp"
 #include <algorithm>
 #include <iterator>
@@ -39,7 +40,10 @@ ZMQClientComponent::ZMQClientComponent()
 
 void ZMQClientComponent::setupConnection()
 {
-    const string endpoint = "tcp://localhost:5555";
+    const string endpoint = "tcp://localhost:5559";
+
+    // Set the identity http://api.zeromq.org/4-2:zmq-setsockopt 
+    client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);
     cout << "Connecting to ZMQ Network Manager " << endpoint << "..." << endl;
     client.connect(endpoint);
 }
@@ -87,9 +91,9 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
      * Send message from ZMQ_DEALER
      *ZMQ_SNDMORE is multipart message. --- 
     */
-    zmq::message_t message;
-    client.send(message);
-    
+    //zmq::message_t message;
+    //client.send(message);
+    s_send(client,allInstrumentData);
     
 }
 
@@ -135,14 +139,14 @@ void ZMQClientComponent::init()
     
     // Send instrument data structure members
     instrumentData itemp;
-    //z.instrumentDataSend(itemp);
+    z.instrumentDataSend(itemp);
 
 
     // Send attaching data
-    attachingData n;
-    z.attachingDataToSend(n);
-    //z.getResponseFromServer();
-    //z.draw();
+    // attachingData n;
+    // z.attachingDataToSend(n);
+    // z.getResponseFromServer();
+    // z.draw();
     
 }
 
