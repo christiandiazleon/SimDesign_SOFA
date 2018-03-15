@@ -10,14 +10,14 @@ int main(int argc, char *argv[])
 
     const string endpoint = "tcp://localhost:5559";
 
-    client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);
+    client.setsockopt(ZMQ_IDENTITY, "PEER3", 5);
     cout << "Connecting to ZMQ Network Manager " << endpoint << "..." << endl;
     client.connect(endpoint);
     for (int request = 0; request < 10; request++)
     {
 
-        s_sendmore(client, "");
-        s_send(client, "Testing sending some data");
+        //s_sendmore(client, "");
+        s_send(client, "Testing sending some datasass");
 
         std::string string = s_recv(client);
 

@@ -19,7 +19,14 @@ int main (int argc, char *argv[])
     //std::string string = s_recv(peer2);
 
     //std::cout << "Received reply " << " [" << string << "]" << std::endl;
-    
+
+    while (1)
+    {
+        std::string string = s_recv(peer2);
+        std::cout << "Received request: " << string << std::endl;
+    }
+
+        /*
     for (int request = 0; request < 10; request++)
     {
 
@@ -31,5 +38,5 @@ int main (int argc, char *argv[])
         std::cout << "Received reply " << request
                   << " [" << string << "]" << std::endl;
     }
-    
+    */
 }
