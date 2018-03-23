@@ -1,5 +1,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <zmq.hpp>
+#include <zmq.h>
 #include "zhelpers.hpp"
 #include <algorithm>
 #include <iterator>
@@ -21,16 +22,21 @@ namespace component
 namespace controller
 {
 
-
-/* variables para ZMQ Internal Server */
-// zmq::context_t context(1);
-// zmq::socket_t socket(context, ZMQ_REP);
-
-/* variables para ZMQ Internal Client estas son */
+// Create a context to use in all sockets creation
 zmq::context_t context(1);
-zmq::socket_t client(context, ZMQ_DEALER);
+
+/** Socket to subscribe this SOFA client to Network Manager server.
+ * Although in first instance this SOFA client will be have a sender behavior
+ * and not will receive messages
+ **/
+zmq::socket_t subscriber(context, ZMQ_SUB);
 
 
+/**
+ * Socket to send message, which will be taked by Network Manager and delivered to
+ * all peer clients connected
+ **/
+zmq::socket_t sender(context, ZMQ_PUSH);
 
 ZMQClientComponent::ZMQClientComponent()
 // : myparam(initData(&myparam, 0.42, "myparam", "ZeroMq version plugin. "))
@@ -42,12 +48,32 @@ ZMQClientComponent::ZMQClientComponent()
 
 void ZMQClientComponent::setupConnection()
 {
-    const string endpoint = "tcp://localhost:5559";
+    /**publisherEndpoint is the endpoint through the clients will be connect to
+     * Network Manager and will receive data driven by SOFA events
+     */
+    const string publisherEndpoint = "tcp://localhost:5557";
+
+    /**pushEndpoint is the enpoint through clients send SOFA data events to
+     * Network Manager and this in turn redirects them to all connected clients
+     * via publisherEndpoint socket  
+    */
+    const string pushEndpoint = "tcp://localhost:5558";
+
+    /**
+     * Connecting to publisherEndpoint and pushEndpoint
+    */
+    cout << "Connecting to ZMQ Network Manager   " << publisherEndpoint << "..." << endl;
+    subscriber.connect("tcp://localhost:5557");
+    subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+
+    /**
+     * Connecting to publisherEndpoint and pushEndpoint
+    */
+    sender.connect("tcp://localhost:5558");
 
     // Set the identity http://api.zeromq.org/4-2:zmq-setsockopt
-    client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);
-    cout << "Connecting to ZMQ Network Manager " << endpoint << "..." << endl;
-    client.connect(endpoint);
+    //client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);    
+    
 }
 
 void ZMQClientComponent::instrumentDataSend(instrumentData a)
@@ -89,6 +115,9 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
     allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " " 
     + blnDataReadyStr;
 
+    // sleep(1);
+    s_send(sender, allInstrumentData);
+
     /**
      * Send message from ZMQ_DEALER
      *ZMQ_SNDMORE is multipart message. --- 
@@ -96,7 +125,20 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
     //zmq::message_t message;
     //client.send(message);
     //s_sendmore(client, "");
-    s_send(client,allInstrumentData);
+    
+    //  Wait for next request from client
+    
+    /*
+    while(1){
+        // std::string string = s_recv(subscriber);
+
+        // std::cout << "Received request: " << string << std::endl;
+
+        // Do some 'work'
+        sleep(1);
+        s_send(sender, allInstrumentData);
+    }
+    */
     
 }
 
@@ -104,12 +146,14 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
 void ZMQClientComponent::attachingDataToSend(attachingData b)
 {
     string vIdTrianglesStr0;
-    
+
+    std::cout << "enviando datos de attaching: " << endl;
+
     b.vIdTriangles = {888, 2, 3, 4};
     int total = 0;
     total = b.vIdTriangles[0] + b.vIdTriangles[1] + b.vIdTriangles[2] + b.vIdTriangles[3];
-    cout << "The first element of vIdTriangles is: " << b.vIdTriangles[0] << endl;
-    cout << "The total of elements is: " << total << endl;
+    // cout << "The first element of vIdTriangles is: " << b.vIdTriangles[0] << endl;
+    // cout << "The total of elements is: " << total << endl;
     vIdTrianglesStr0 = to_string(b.vIdTriangles[0]);
 
     
@@ -122,7 +166,7 @@ void ZMQClientComponent::attachingDataToSend(attachingData b)
     //std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
     //socket.send(request);
     
-    s_send(client, vIdTrianglesStr0);
+    s_send(sender, vIdTrianglesStr0);
     
     
 }
@@ -134,18 +178,21 @@ void ZMQClientComponent::init()
     
     // Connecting to Nerwork Manager
     z.setupConnection();
-    
-    // Send instrument data structure members
+
+    // Creating instrument data object
     instrumentData itemp;
-    z.instrumentDataSend(itemp);
-
-
-    // Send attaching data
-    attachingData n;
-    z.attachingDataToSend(n);
-    // z.getResponseFromServer();
-    // z.draw();
     
+    // Creating attaching data object
+    attachingData n;
+
+    while (1)
+    {
+        // Sending data objects structure members
+        z.instrumentDataSend(itemp);
+        z.attachingDataToSend(n);
+        // z.getResponseFromServer();
+        // z.draw();
+    }
 }
 
 ZMQClientComponent::~ZMQClientComponent()
