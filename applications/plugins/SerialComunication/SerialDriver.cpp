@@ -72,17 +72,17 @@ static sofa::helper::system::atomic<int> doUpdate;
 
 int serial_fd;           //-- Serial port descriptor
 char data[CMD_LEN+1];    //-- The received command
-char path[15] = "/dev/ttyUSB0";
+char path[15] = "/dev/ttyUSB1";
 float n2 = 0.0;
 
 int SerialDriver::initDevice()
 {
-	std::cout<<"init Device is called"<<std::endl;
+    std::cout<<"init Device is called"<<std::endl;
     return 1;
 }
 
 SerialDriver::SerialDriver()
-	: forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
+    : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
     , scale(initData(&scale, 100.0, "scale","Default scale applied to the Phantom Coordinates. "))
     , positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
     , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
@@ -126,7 +126,7 @@ SerialDriver::~SerialDriver()
 
 void SerialDriver::setForceFeedback(ForceFeedback* ff)
 {
-	// the forcefeedback is already set
+    // the forcefeedback is already set
     if(data_s.forceFeedback == ff)
     {
         return;
@@ -137,7 +137,7 @@ void SerialDriver::setForceFeedback(ForceFeedback* ff)
 
 void SerialDriver::init(){
 
-    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());	
+    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());    
 
     if(alignOmniWithCamera.getValue())
     {
@@ -278,7 +278,7 @@ void SerialDriver::init(){
     //std::thread first (&SerialDriver::serial_read, this, serial_fd, data, CMD_LEN, TIMEOUT);
 
     if (serial_fd==-1) {
-        printf ("Error opening the serial device: %s\n", path);
+        printf ("Error opening the serial device: %s\n","/dev/usbnoseque");
         perror("OPEN");
         exit(0);
     }
@@ -299,13 +299,13 @@ void SerialDriver::bwdInit(){
 }
 
 void SerialDriver::setDataValue(){
-	data_s.scale = scale.getValue();
+    data_s.scale = scale.getValue();
     data_s.forceScale = forceScale.getValue();
 
     Quat q = orientationBase.getValue();
     q.normalize();
     orientationBase.setValue(q);
-    data_s.world_H_baseOmni.set( positionBase.getValue(), q		);
+    data_s.world_H_baseOmni.set( positionBase.getValue(), q     );
     q=orientationTool.getValue();
     q.normalize();
     data_s.endOmni_H_virtualTool.set(positionTool.getValue(), q);
@@ -313,18 +313,18 @@ void SerialDriver::setDataValue(){
 }
 
 void SerialDriver::reset(){
-	std::cout<<"SerialDriver::reset() is called" <<std::endl;
+    std::cout<<"SerialDriver::reset() is called" <<std::endl;
     this->reinit();
 }
 
 void SerialDriver::reinit(){
-	std::cout<<"SerialDriver::reinit() is called" <<std::endl;
+    std::cout<<"SerialDriver::reinit() is called" <<std::endl;
 
-	this->cleanup();
-	this->bwdInit();
-	if(data_s.scale!=oldScale)
-		changeScale = true;
-	std::cout<<"SerialDriver::reinit() done" <<std::endl;
+    this->cleanup();
+    this->bwdInit();
+    if(data_s.scale!=oldScale)
+        changeScale = true;
+    std::cout<<"SerialDriver::reinit() done" <<std::endl;
 }
 
 void SerialDriver::draw(const core::visual::VisualParams* vparam)
@@ -344,6 +344,7 @@ void SerialDriver::draw()
             float n;
             int flush = tcflush(serial_fd,TCIOFLUSH);
             n = serial_read(serial_fd,data,CMD_LEN,TIMEOUT);
+            std::cout << data << std::endl; 
             flush = tcflush(serial_fd,TCIOFLUSH);
             //n = n*0.01f;
 
@@ -367,7 +368,7 @@ void SerialDriver::draw()
         //}
         //rigidDOF->x.endEdit();
     }
-	//std::cout<<"SerialDriver::draw() is called" <<std::endl;	
+    //std::cout<<"SerialDriver::draw() is called" <<std::endl;  
 }
 
 void SerialDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre){
@@ -385,7 +386,7 @@ void SerialDriver::onAnimateBeginEvent()
 }
 
 void SerialDriver::handleEvent(core::objectmodel::Event *event){
-	if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
         onAnimateBeginEvent();
     }
