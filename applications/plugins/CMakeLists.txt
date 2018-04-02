@@ -41,6 +41,9 @@ sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default
 
 sofa_add_plugin(SerialComunication SerialComunication)
 
+sofa_add_plugin(ZeroMQCommunication ZeroMQCommunication)
+
+
 
 
 
