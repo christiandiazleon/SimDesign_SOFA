@@ -1,0 +1,16 @@
+# CMake package configuration file for the ZMQCommunication library
+
+@PACKAGE_INIT@
+
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} @CMAKE_MODULE_PATH@")
+
+find_package(SofaFramework REQUIRED)
+find_package(SofaBase REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+if(NOT TARGET ZeroMQCommunication)
+    include("${CMAKE_CURRENT_LIST_DIR}/ZeroMQCommunicationTargets.cmake")
+endif()
+
+set(ZeroMQCommunication_LIBRARIES ZeroMQCommunication)
+set(ZeroMQCommunication_INCLUDE_DIRS @PACKAGE_ZEROMQCOMMUNICATION_INCLUDE_DIR@)
