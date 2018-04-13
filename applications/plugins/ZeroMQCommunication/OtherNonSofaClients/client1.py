@@ -23,8 +23,8 @@ def main():
             message = subscriber.recv()
             print("I: received message %s" % message)
         
-        # message = "Soy el cliente python 1"
-        # publisher.send_string("%s" % message)
+        message = "Soy el cliente python 1"
+        publisher.send_string("%s" % message)
 
         """
         else:

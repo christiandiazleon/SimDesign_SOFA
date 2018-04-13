@@ -78,6 +78,8 @@ void ZMQClientComponent::setupConnection()
 
 void ZMQClientComponent::instrumentDataSend(instrumentData a)
 {   
+    std::cout << "enviando datos de instrument: " << endl;
+
     a.pos = sofa::defaulttype::Vec3d(2.0f, 1.0f, 1.0f);
     a.quat = defaulttype::Quat(1.0f, 1.0f, 4.0f, 1.0f);
     a.btnState = 45;
