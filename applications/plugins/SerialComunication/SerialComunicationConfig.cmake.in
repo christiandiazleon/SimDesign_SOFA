@@ -4,6 +4,7 @@
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} @CMAKE_MODULE_PATH@")
 
+
 find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
