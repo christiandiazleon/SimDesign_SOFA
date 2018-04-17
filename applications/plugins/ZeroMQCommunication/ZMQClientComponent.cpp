@@ -65,7 +65,7 @@ void ZMQClientComponent::setupConnection()
     cout << "Connecting to ZMQ Network Manager   " << publisherEndpoint << "..." << endl;
     subscriber.connect("tcp://localhost:5557");
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
-
+    
     /**
      * Connecting to publisherEndpoint and pushEndpoint
     */
