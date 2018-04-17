@@ -38,10 +38,10 @@ sofa_add_plugin(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default
-
+sofa_add_plugin(ZeroMQCommunication ZeroMQCommunication)
 sofa_add_plugin(SerialComunication SerialComunication)
 
-sofa_add_plugin(ZeroMQCommunication ZeroMQCommunication)
+
 
 
 

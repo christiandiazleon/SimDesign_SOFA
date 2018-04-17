@@ -28,7 +28,5 @@ target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentGeneral)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${ZeroMQCommunication_INCLUDE_DIRS}>")
 target_link_libraries(${PROJECT_NAME} ZeroMQCommunication)
 
-## Install rules for the library; CMake package configurations files
-##sofa_create_package(${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
