@@ -1,4 +1,5 @@
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
 #include <zmq.hpp>
 #include <zmq.h>
 #include "zhelpers.hpp"
@@ -147,6 +148,7 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
 
 void ZMQClientComponent::attachingDataToSend(attachingData b)
 {
+
     string vIdTrianglesStr0;
 
     std::cout << "enviando datos de attaching: " << endl;
@@ -175,7 +177,12 @@ void ZMQClientComponent::attachingDataToSend(attachingData b)
 
 void ZMQClientComponent::init()
 {
-    std::cout << "ZeroMQCommunication::init()" << std::endl;
+
+    /* We get the rootContext */
+    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
+    cout << "rootContext: " << rootContext << endl;
+
+    std::cout << "ZeroMQCommunication::init() mmsmdmsd" << std::endl;
     ZMQClientComponent z;
     
     // Connecting to Nerwork Manager
