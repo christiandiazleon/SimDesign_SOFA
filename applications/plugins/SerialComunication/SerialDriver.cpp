@@ -199,7 +199,9 @@ void SerialDriver::init(){
     std::cout << "Mi nombre es " << listMechanicalObj.size() << std::endl;
     int numberM = listMechanicalObj.size();*/
 
-
+    /** 
+     * We get a 
+    */
     getContext()->get<MechanicalObjectType>(&objectsMechTemp, core::objectmodel::BaseContext::SearchDown);
 
     int numberM = objectsMechTemp.size();

@@ -18,7 +18,7 @@
 
     <!-- Added ZMQ Communication plugin -->
     <RequiredPlugin name="ZeroMQCommunication" pluginName="ZeroMQCommunication" /> 
-    <ZMQClientComponent name="Sofa Client Component" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
+    <ZMQClientComponent name="ZMQCC" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
     <!-- Review late above parameters ZMQClientComponent  -->
 
     
