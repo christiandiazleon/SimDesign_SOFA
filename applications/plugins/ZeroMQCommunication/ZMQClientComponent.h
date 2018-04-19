@@ -13,8 +13,8 @@
 #include <sofa/defaulttype/Quat.h>
 using sofa::defaulttype::Quat;
 
-// #include <sofa/simulation/component/visualModel/controller/SerialDriver.h>
-// #include "SerialDriver.h"
+#include <SerialComunication/SerialDriver.h>
+//#include "SerialDriver.h"
 /// #include <SofaBaseMechanics/MechanicalObject.h>
 
 using std::string;
@@ -58,7 +58,7 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     // Data<double> myparam;
     // Data<std::string> d_address;
     // typedef sofa::defaulttype::Vec3d Vec3d;
-    // typedef defaulttype::Quat Quat;
+    // typedef defaulttype::Quat Quat;0
     
 
     ZMQClientComponent();
@@ -87,8 +87,10 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     /** We declare an alias to SerialDriver attribute, which shuld be a vector
      * to reference it on ZMQClientComponent.cpp to save inside the SerilDriver objects
       */
-    typedef sofa::simulation::component::visualModel::controller::SerialDriver d;
+    //typedef sofa::component::controller::SerialDriver g;
+    typedef SerialDriver SerialDriverType;
     // typedef sofa::component::controller::SerialDriver d;
+    std::vector<SerialDriverType *> objectsSerialDriver;
 
   private:
     struct timeval t_before, t_after;

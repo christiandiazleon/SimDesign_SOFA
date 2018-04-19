@@ -37,13 +37,13 @@
 
 //Serial Communication
 #include <termios.h>
-#include <fcntl.h> 
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <thread> 
+#include <thread>
 #include <unistd.h>
 #include <sys/select.h>
 #include <cstring>
@@ -73,7 +73,7 @@ struct DeviceData
     Quat quat;
     bool ready;
     bool stop;
-};  
+};
 
 struct SerialData
 {
@@ -153,7 +153,7 @@ public:
 	SerialDriver();
     virtual ~SerialDriver ();
 
-    virtual void init();   
+    virtual void init();
     virtual void bwdInit();
     virtual void reset();
     void reinit();

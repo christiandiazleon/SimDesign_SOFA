@@ -22,13 +22,15 @@ set(EXTRA_FILES
 )
 
 find_package(SofaFramework REQUIRED)
+find_package(SofaBase REQUIRED)
+find_package(SofaGeneral REQUIRED)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ZEROMQCOMMUNICATION")
-target_link_libraries(${PROJECT_NAME} -lzmq ${} SofaCore)
+target_link_libraries(${PROJECT_NAME} -lzmq ${} SofaCore SofaComponentGeneral)
 
 
 ## Install rules for the library; CMake package configurations files

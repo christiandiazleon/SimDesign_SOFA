@@ -182,7 +182,9 @@ void ZMQClientComponent::init()
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
     cout << "rootContext: " << rootContext << endl;
 
-    std::cout << "ZeroMQCommunication::init() mmsmdmsd" << std::endl;
+    getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchDown);
+
+    std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQClientComponent z;
     
     // Connecting to Nerwork Manager
