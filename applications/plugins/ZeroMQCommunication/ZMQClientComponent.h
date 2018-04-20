@@ -84,7 +84,7 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     virtual void draw();
     virtual void draw(const core::visual::VisualParams *) override;
 
-    /** We declare an alias to SerialDriver attribute, which shuld be a vector
+    /** We declare an alias to SerialDriver attribute, which should be a vector
      * to reference it on ZMQClientComponent.cpp to save inside the SerilDriver objects
       */
     //typedef sofa::component::controller::SerialDriver g;

@@ -239,7 +239,7 @@ void ZMQClientComponent::draw()
 // int ZeroMqComponentClass = sofa::core::RegisterObject("This component does nothing.").add<ZeroMqComponent>();
 SOFA_DECL_CLASS(ZMQClientComponent)
 
-int ZMQClientComponentClass = sofa::core::RegisterObject("This component create a Socket.").add< ZMQClientComponent >();
+int ZMQClientComponentClass = sofa::core::RegisterObject("This component connect to ZMQ Socket.").add< ZMQClientComponent >();
 } // namespace controller
 
 } // namespace component
