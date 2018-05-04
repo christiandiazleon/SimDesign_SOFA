@@ -13,8 +13,8 @@
 #include <sofa/defaulttype/Quat.h>
 using sofa::defaulttype::Quat;
 
-#include <SerialComunication/SerialDriver.h>
-//#include "SerialDriver.h"
+//#include <SerialComunication/SerialDriver.h>
+#include "SerialDriver.h"
 /// #include <SofaBaseMechanics/MechanicalObject.h>
 
 using std::string;

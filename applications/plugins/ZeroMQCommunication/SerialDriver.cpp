@@ -111,6 +111,7 @@ void SerialDriver::setForceFeedback(ForceFeedback *ff)
 
 void SerialDriver::init()
 {
+    std::cout << "El promi se almorzo a la recepcionista" << std::endl;
 
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
 
@@ -137,7 +138,6 @@ void SerialDriver::init()
 
     nodePrincipal = rootContext->createChild("omniVisu " + deviceName.getValue());
     nodePrincipal->updateContext();
-
     initVisu = false;
     visuActif = false;
 
@@ -316,12 +316,14 @@ void SerialDriver::reinit()
 
 void SerialDriver::draw(const core::visual::VisualParams *vparam)
 {
+    std::cout << "El promi se almorzo a la recepcionista" << std::endl;
     vparam = NULL;
     draw();
 }
 
 void SerialDriver::draw()
 {
+    std::cout << "El promi se almorzo a la recepcionista" << std::endl;
     if (initVisu)
     {
         //VecCoord& posD =(*posDevice.beginEdit());

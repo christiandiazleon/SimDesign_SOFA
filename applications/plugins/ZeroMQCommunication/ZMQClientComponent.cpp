@@ -183,13 +183,13 @@ void ZMQClientComponent::init()
     cout << "rootContext: " << rootContext << endl;
 
     //este era
-    //getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchDown);
+    getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchRoot);
 
-    rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
+    //rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
 
     std::cout << "Hola este es mi vector Serial Driver:" << objectsSerialDriver.size() << endl;
-
-    /*int total = 0;
+    //std::cout << objectsSerialDriver[0];
+        /*int total = 0;
     
     for (int i = 0; i < objectsSerialDriver.size(); ++i)
     {
@@ -198,12 +198,12 @@ void ZMQClientComponent::init()
     cout << "The total of the Serial Driver elements is: " << total << endl;
     */
 
-    //SerialDriver* s = new SerialDriver();
-    // Ni siquiera permite instanciar un objeto (apuntador en este caso) de SerialDriver
-    // Esto es por la undefined reference to SerialDriver... ya es problema de Linkeo
+    SerialDriver* s = new SerialDriver();
+        // Ni siquiera permite instanciar un objeto (apuntador en este caso) de SerialDriver
+        // Esto es por la undefined reference to SerialDriver... ya es problema de Linkeo
 
-    std::cout
-        << "ZeroMQCommunication::init()" << std::endl;
+        std::cout
+              << "ZeroMQCommunication::init()" << std::endl;
     ZMQClientComponent z;
     
     // Connecting to Nerwork Manager

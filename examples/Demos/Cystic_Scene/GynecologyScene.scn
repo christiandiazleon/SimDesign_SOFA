@@ -13,11 +13,10 @@
     <DirectionalLight name="light2" color="1 1 1" direction="1 1 0" />
     <DirectionalLight name="light2" color="1 1 1" direction="-1 -1 0" />
 
-    <RequiredPlugin name="SerialComunication" pluginName="SerialComunication" /> 
-    <SerialDriver name="Serial Driver" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
-
+    
     <!-- Added ZMQ Communication plugin -->
-    <RequiredPlugin name="ZeroMQCommunication" pluginName="ZeroMQCommunication" /> 
+    <RequiredPlugin name="ZeroMQCommunication" pluginName="ZeroMQCommunication" />
+    <SerialDriver name="Serial Driver" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
     <ZMQClientComponent name="ZMQCC" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
     <!-- Review late above parameters ZMQClientComponent  -->
 
