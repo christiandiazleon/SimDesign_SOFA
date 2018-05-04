@@ -187,9 +187,11 @@ void ZMQClientComponent::init()
 
     //rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
 
-    std::cout << "Hola este es mi vector Serial Driver:" << objectsSerialDriver.size() << endl;
-    //std::cout << objectsSerialDriver[0];
-        /*int total = 0;
+    std::cout << "Hola este es el tamaño de mi vector Serial Driver:" << objectsSerialDriver.size() << " \n\n"
+              << endl;
+    std::cout << "Este es el elemento 0 de mi vector Serial Driver: " << objectsSerialDriver[0]->name.getValue() << " \n\n"
+              << endl;
+    /*int total = 0;
     
     for (int i = 0; i < objectsSerialDriver.size(); ++i)
     {
@@ -231,13 +233,15 @@ void ZMQClientComponent::init()
 
 
 
-/*void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
+void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 {
 }
 
 void ZMQClientComponent::draw()
-{   
-    
+{
+    std::cout
+        << "ZEl promi" << std::endl;
+
     instrumentData itemp;
     itemp.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);
     itemp.quat = defaulttype::Quat(1.0f, 1.0f, 4.0f, 1.0f);
@@ -250,7 +254,7 @@ void ZMQClientComponent::draw()
     // SofaTypeMessages a;
     // a.instrumentDataSend(itemp);
       
-}*/
+}
 
 
 // int ZeroMqComponentClass = sofa::core::RegisterObject("This component does nothing.").add<ZeroMqComponent>();

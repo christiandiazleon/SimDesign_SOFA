@@ -21,6 +21,10 @@
     <!-- Review late above parameters ZMQClientComponent  -->
 
     
+
+
+
+    
     <Node   name="Instrument"  principalGraph="true">
         <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"/>
         <UniformMass template="Rigid" name="mass"  totalmass="0.05" />

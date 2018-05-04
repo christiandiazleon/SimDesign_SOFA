@@ -111,7 +111,7 @@ void SerialDriver::setForceFeedback(ForceFeedback *ff)
 
 void SerialDriver::init()
 {
-    std::cout << "El promi se almorzo a la recepcionista" << std::endl;
+    std::cout << "El promi se almorzo a la recepcionista - metodo init" << std::endl;
 
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
 
@@ -316,14 +316,14 @@ void SerialDriver::reinit()
 
 void SerialDriver::draw(const core::visual::VisualParams *vparam)
 {
-    std::cout << "El promi se almorzo a la recepcionista" << std::endl;
+    std::cout << "El promi se almorzo a la recepcionista - draw con parametros" << std::endl;
     vparam = NULL;
     draw();
 }
 
 void SerialDriver::draw()
 {
-    std::cout << "El promi se almorzo a la recepcionista" << std::endl;
+    std::cout << "El promi se almorzo a la recepcionista - draw solo" << std::endl;
     if (initVisu)
     {
         //VecCoord& posD =(*posDevice.beginEdit());
