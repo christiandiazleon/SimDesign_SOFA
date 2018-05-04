@@ -185,9 +185,22 @@ void ZMQClientComponent::init()
     //este era
     //getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchDown);
 
-    //rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
+    rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
 
-    SerialDriver* s = new SerialDriver();
+    std::cout << "Hola este es mi vector Serial Driver:" << objectsSerialDriver.size() << endl;
+
+    /*int total = 0;
+    
+    for (int i = 0; i < objectsSerialDriver.size(); ++i)
+    {
+        total += objectsSerialDriver[i];
+    }
+    cout << "The total of the Serial Driver elements is: " << total << endl;
+    */
+
+    //SerialDriver* s = new SerialDriver();
+    // Ni siquiera permite instanciar un objeto (apuntador en este caso) de SerialDriver
+    // Esto es por la undefined reference to SerialDriver... ya es problema de Linkeo
 
     std::cout
         << "ZeroMQCommunication::init()" << std::endl;

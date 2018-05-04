@@ -70,7 +70,7 @@ const char *getModuleDescription()
 const char *getModuleComponentList()
 {
     // Comma-separated list of the components in this plugin, empty for now
-    return "";
+    return "SerialPort Controllers, ZeroMQ";
 }
 
 //}
@@ -78,3 +78,4 @@ const char *getModuleComponentList()
 //}
 
 SOFA_LINK_CLASS(ZMQClientComponent)
+SOFA_LINK_CLASS(SerialDriver)

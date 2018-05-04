@@ -6,6 +6,7 @@ set(${PROJECT_NAME}_VERSION 1.0)
 set(HEADER_FILES
     initZeroMQCommunication.h
     ZMQClientComponent.h
+    SerialDriver.h
     PointNet.h
     SofaTypeMessages.h
 )
@@ -13,6 +14,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     initZeroMQCommunication.cpp
     ZMQClientComponent.cpp
+    SerialDriver.cpp
     PointNet.cpp
     SofaTypeMessages.cpp
 )
@@ -30,6 +32,10 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ZEROMQCOMMUNICATION")
+
+# Added
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SERIALPLUGIN")
+
 target_link_libraries(${PROJECT_NAME} -lzmq ${} SofaCore SofaComponentGeneral)
 
 
