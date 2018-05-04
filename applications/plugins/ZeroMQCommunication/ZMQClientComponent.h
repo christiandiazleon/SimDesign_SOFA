@@ -62,7 +62,7 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     
 
     ZMQClientComponent();
-    virtual ~ZMQClientComponent();
+    virtual ~ZMQClientComponent(){};
     
     /* Conect to ZMQ external Server  */
     void setupConnection();
@@ -81,8 +81,9 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     // void sendReplyToClient();
     void init();
 
-    virtual void draw();
-    virtual void draw(const core::visual::VisualParams *) override;
+    virtual void draw(){};
+    //virtual void draw(const core::visual::VisualParams *) override;
+    virtual void draw(const core::visual::VisualParams *){};
 
     /** We declare an alias to SerialDriver attribute, which should be a vector
      * to reference it on ZMQClientComponent.cpp to save inside the SerilDriver objects

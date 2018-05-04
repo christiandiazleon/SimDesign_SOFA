@@ -182,9 +182,15 @@ void ZMQClientComponent::init()
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
     cout << "rootContext: " << rootContext << endl;
 
-    getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchDown);
+    //este era
+    //getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchDown);
 
-    std::cout << "ZeroMQCommunication::init()" << std::endl;
+    //rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
+
+    SerialDriver* s = new SerialDriver();
+
+    std::cout
+        << "ZeroMQCommunication::init()" << std::endl;
     ZMQClientComponent z;
     
     // Connecting to Nerwork Manager
@@ -206,16 +212,14 @@ void ZMQClientComponent::init()
     }
 }
 
-ZMQClientComponent::~ZMQClientComponent()
+/*ZMQClientComponent::~ZMQClientComponent()
 {
-}
+}*/
 
 
-void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
+
+/*void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 {
-    //draw();
-    /*De alguna forma este metodo genera como un ciclo o muestra varais
-    veces la salida del DRAW */
 }
 
 void ZMQClientComponent::draw()
@@ -233,7 +237,7 @@ void ZMQClientComponent::draw()
     // SofaTypeMessages a;
     // a.instrumentDataSend(itemp);
       
-}
+}*/
 
 
 // int ZeroMqComponentClass = sofa::core::RegisterObject("This component does nothing.").add<ZeroMqComponent>();
