@@ -7,7 +7,10 @@
 /******************************************************************/
 
 //Sensable include
-
+#include <HD/hd.h>
+#include <HDU/hdu.h>
+#include <HDU/hduError.h>
+#include <HDU/hduVector.h>
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -203,9 +206,13 @@ public:
     //vector<NewOmniDriver*> autreOmniDriver;
 
 private:
-    float posDOFEST;
+    float posDOFEST_X;
+    float posDOFEST_Y;
+    float posDOFEST_Z;
     void handleEvent(core::objectmodel::Event *);
     bool noDevice;
+
+    void die(char *s);
 
     //Serial Functions
     int  serial_open(char *serial_name, speed_t baud);

@@ -17,6 +17,16 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
+#include <stdio.h> //printf
+#include <string.h> //memset
+#include <stdlib.h> //exit(0);
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+ 
+#define BUFLEN 512  //Max length of buffer
+#define PORT 8888   //The port on which to listen for incoming data
+
 using namespace std;
 using std::cout;
 using std::endl;
@@ -74,6 +84,15 @@ int serial_fd;           //-- Serial port descriptor
 char data[CMD_LEN+1];    //-- The received command
 char path[15] = "/dev/ttyUSB0";
 float n2 = 0.0;
+
+//Socket Variables
+struct sockaddr_in si_me, si_other;
+     
+int s, i,recv_len;
+socklen_t slen = sizeof(si_other);
+
+char buf[BUFLEN];
+
 
 int SerialDriver::initDevice()
 {
@@ -135,7 +154,32 @@ void SerialDriver::setForceFeedback(ForceFeedback* ff)
     data_s.forceFeedback = ff;
 };
 
+void SerialDriver::die(char *s)
+{
+    perror(s);
+    exit(1);
+}
+
 void SerialDriver::init(){
+
+    //create a UDP socket
+    if ((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+    {
+        die("socket");
+    }
+     
+    // zero out the structure
+    memset((char *) &si_me, 0, sizeof(si_me));
+     
+    si_me.sin_family = AF_INET;
+    si_me.sin_port = htons(PORT);
+    si_me.sin_addr.s_addr = htonl(INADDR_ANY);
+     
+    //bind socket to port
+    if( bind(s , (struct sockaddr*)&si_me, sizeof(si_me) ) == -1)
+    {
+        die("bind");
+    }
 
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());	
 
@@ -184,7 +228,12 @@ void SerialDriver::init(){
 
             VecCoord& posDOF =*(rigidDOF->x.beginEdit());
                 posDOF.resize(NVISUALNODE);
-                posDOFEST = posDOF[0].getCenter()[0];
+                posDOFEST_X = posDOF[1].getCenter()[0];
+                std::cout << posDOFEST_X << std::endl;
+                posDOFEST_Y = posDOF[1].getCenter()[1];
+                std::cout << posDOFEST_Y << std::endl;
+                posDOFEST_Z = posDOF[1].getCenter()[2];
+                std::cout << posDOFEST_Z << std::endl;
             rigidDOF->x.endEdit();
 
             rigidDOF->init();
@@ -273,15 +322,15 @@ void SerialDriver::init(){
 
     //-- Open the serial port
     //-- The speed is configure at 9600 baud
-    serial_fd=serial_open(path,B9600);
-    int flush = tcflush(serial_fd,TCIOFLUSH);
+    //serial_fd=serial_open(path,B9600);
+    //int flush = tcflush(serial_fd,TCIOFLUSH);
     //std::thread first (&SerialDriver::serial_read, this, serial_fd, data, CMD_LEN, TIMEOUT);
 
-    if (serial_fd==-1) {
-        printf ("Error opening the serial device: %s\n", path);
-        perror("OPEN");
-        exit(0);
-    }
+    //if (serial_fd==-1) {
+      //  printf ("Error opening the serial device: %s\n", path);
+        //perror("OPEN");
+        //exit(0);
+    //}
     
 }
 
@@ -336,9 +385,70 @@ void SerialDriver::draw(const core::visual::VisualParams* vparam)
 
 void SerialDriver::draw()
 {
+    HDdouble transform[16];
+    // get Position and Rotation from transform => put in servoDeviceData
+    Mat3x3d mrot;
+    Quat rot;
+
     if(initVisu)
-    {
-        //VecCoord& posD =(*posDevice.beginEdit());
+    {   
+        fflush(stdout);
+         
+        //try to receive some data, this is a blocking call
+        
+        if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == -1)
+        {
+            die("recvfrom()");
+        }
+        
+        char * pch;
+        printf ("Splitting string \"%s\" into tokens:\n",buf);
+        pch = strtok (buf," ,");
+        float ftemp[16];
+        int i = 0;
+
+        while (pch != NULL && i<16)
+        {
+            ftemp[i] = atof(pch);
+            std::cout << ftemp[i] << std::endl;
+            pch = strtok (NULL, " ,");
+            i++;
+        }
+      
+        
+        //print details of the client/peer and the data received
+        //printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
+        //printf("Data: %s\n" , buf);
+        
+        for (int u=0; u<3; u++)
+                for (int j=0; j<3; j++)
+                    mrot[u][j] = ftemp[j*4+u];
+
+        rot.fromMatrix(mrot);
+        rot.normalize();
+        
+        
+
+        VecCoord& posDOF =*(objectsMechTemp[0]->x.beginEdit());
+            //posDOF.resize(NVISUALNODE+1);
+            posDOF[1].getCenter()[0] =  posDOFEST_X + ftemp[12]*0.01;
+            posDOF[1].getCenter()[1] =  posDOFEST_Y + ftemp[13]*0.01;
+            posDOF[1].getCenter()[2] =  posDOFEST_Z + ftemp[14]*0.01;
+
+            //std::cout << "Orientation: " << posDOF[1].getOrientation()[1] << std::endl;
+            posDOF[1].getOrientation() =  rot;
+            //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
+        objectsMechTemp[0]->x.endEdit();
+
+        //now reply the client with the same data
+        if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == -1)
+        {
+            die("sendto()");
+            std::cout << "Error" << std::endl;
+        }
+        //close(s);
+
+        /*//VecCoord& posD =(*posDevice.beginEdit());
         if (serial_fd!=-1){
             float n1;
             float n;
@@ -355,7 +465,7 @@ void SerialDriver::draw()
                 //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
             objectsMechTemp[0]->x.endEdit();
 
-        }
+        }*/
         //std::cout << posDOF[1].getCenter()[2] << std::endl;
         //for(int i=0;i<NVISUALNODE;i++)
         //{+ 0.01f
