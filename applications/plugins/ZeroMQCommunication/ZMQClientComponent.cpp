@@ -204,19 +204,25 @@ void ZMQClientComponent::init()
         // Ni siquiera permite instanciar un objeto (apuntador en este caso) de SerialDriver
         // Esto es por la undefined reference to SerialDriver... ya es problema de Linkeo
 
-        std::cout
-              << "ZeroMQCommunication::init()" << std::endl;
+    std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQClientComponent z;
     
     // Connecting to Nerwork Manager
     z.setupConnection();
 
+    float a = s->askDevice();
+    std::cout << "datos del hapkit" << a << std::endl;
+
     // Creating instrument data object
-    instrumentData itemp;
+    // instrumentData itemp;
     
     // Creating attaching data object
-    attachingData n;
+    // attachingData n;
+    
+    
 
+    /*
+    ***** Envio de datos de instrumento y de attaching usando las estructuras***
     while (1)
     {
         // Sending data objects structure members
@@ -225,6 +231,7 @@ void ZMQClientComponent::init()
         // z.getResponseFromServer();
         // z.draw();
     }
+    */
 }
 
 /*ZMQClientComponent::~ZMQClientComponent()
@@ -240,7 +247,7 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 void ZMQClientComponent::draw()
 {
     std::cout
-        << "ZEl promi" << std::endl;
+        << "Draw del ZMQ" << std::endl;
 
     instrumentData itemp;
     itemp.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);
