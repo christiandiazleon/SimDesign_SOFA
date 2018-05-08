@@ -363,7 +363,7 @@ void SerialDriver::draw()
     //std::cout<<"SerialDriver::draw() is called" <<std::endl;
 }
 
-int SerialDriver::askDevice()
+float SerialDriver::askDevice()
 {
     std::cout << "Entrando al metodo askDevice " << std::endl;
     float n1 = -1;
@@ -381,6 +381,7 @@ int SerialDriver::askDevice()
         //n = n*0.01f;
 
         n1 = atof(data) * 0.5;
+        cout << "este es n1 en donde estan los datos leidos del hapkit" << n1 << std::endl;
         return n1;
     }
     return n1;

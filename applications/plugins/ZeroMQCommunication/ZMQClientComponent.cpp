@@ -212,6 +212,8 @@ void ZMQClientComponent::init()
 
     float a = s->askDevice();
     std::cout << "datos del hapkit" << a << std::endl;
+    
+    
 
     // Creating instrument data object
     // instrumentData itemp;

@@ -163,7 +163,7 @@ public:
     void cleanup();
     virtual void draw(const core::visual::VisualParams*) override;
     virtual void draw();
-    int askDevice();
+    float askDevice();
 
     void setForceFeedback(ForceFeedback* ff);
 
