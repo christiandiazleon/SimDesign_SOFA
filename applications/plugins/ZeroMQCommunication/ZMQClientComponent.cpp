@@ -191,18 +191,8 @@ void ZMQClientComponent::init()
               << endl;
     std::cout << "Este es el elemento 0 de mi vector Serial Driver: " << objectsSerialDriver[0]->name.getValue() << " \n\n"
               << endl;
-    /*int total = 0;
-    
-    for (int i = 0; i < objectsSerialDriver.size(); ++i)
-    {
-        total += objectsSerialDriver[i];
-    }
-    cout << "The total of the Serial Driver elements is: " << total << endl;
-    */
 
-    SerialDriver* s = new SerialDriver();
-        // Ni siquiera permite instanciar un objeto (apuntador en este caso) de SerialDriver
-        // Esto es por la undefined reference to SerialDriver... ya es problema de Linkeo
+    //SerialDriver* s = new SerialDriver();
 
     std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQClientComponent z;
@@ -210,8 +200,8 @@ void ZMQClientComponent::init()
     // Connecting to Nerwork Manager
     z.setupConnection();
 
-    float a = s->askDevice();
-    std::cout << "datos del hapkit" << a << std::endl;
+    // float a = s->askDevice();
+    // std::cout << "datos del hapkit" << a << std::endl;
     
     
 
@@ -244,6 +234,11 @@ void ZMQClientComponent::init()
 
 void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 {
+    std::cout
+        << "Draw del ZMQ" << std::endl;
+
+    float a = s->askDevice();
+    std::cout << "datos del hapkit" << a << std::endl;
 }
 
 void ZMQClientComponent::draw()
