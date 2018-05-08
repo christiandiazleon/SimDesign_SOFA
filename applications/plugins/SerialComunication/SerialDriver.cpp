@@ -24,6 +24,11 @@
 #include <sys/socket.h>
 #include <unistd.h>
  
+#include <sofa/helper/system/thread/CTime.h>
+#ifdef SOFA_HAVE_BOOST
+#include <boost/thread.hpp>
+#endif
+
 #define BUFLEN 512  //Max length of buffer
 #define PORT 8888   //The port on which to listen for incoming data
 
@@ -229,11 +234,21 @@ void SerialDriver::init(){
             VecCoord& posDOF =*(rigidDOF->x.beginEdit());
                 posDOF.resize(NVISUALNODE);
                 posDOFEST_X = posDOF[1].getCenter()[0];
-                std::cout << posDOFEST_X << std::endl;
+                //std::cout << posDOFEST_X << std::endl;
                 posDOFEST_Y = posDOF[1].getCenter()[1];
-                std::cout << posDOFEST_Y << std::endl;
+                //std::cout << posDOFEST_Y << std::endl;
                 posDOFEST_Z = posDOF[1].getCenter()[2];
-                std::cout << posDOFEST_Z << std::endl;
+                //std::cout << posDOFEST_Z << std::endl;
+                std::cout << positionBase.getValue() << std::endl;
+                /*
+                posROT1 = posDOF[1].getOrigin()[0];
+                posROT2 = posDOF[1].getOrigin()[1];
+                posROT3 = posDOF[1].getOrigin()[2];
+                posROT4 = posDOF[1].getOrigin()[3];
+                std::cout << "POS ROT[0]: " << posROT1 << std::endl;
+                std::cout << "POS ROT[1]: " << posROT2 << std::endl;
+                std::cout << "POS ROT[2]: " << posROT3 << std::endl;
+                std::cout << "POS ROT[4]: " << posROT4 << std::endl;*/
             rigidDOF->x.endEdit();
 
             rigidDOF->init();
@@ -395,14 +410,13 @@ void SerialDriver::draw()
         fflush(stdout);
          
         //try to receive some data, this is a blocking call
-        
         if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == -1)
         {
             die("recvfrom()");
         }
         
         char * pch;
-        printf ("Splitting string \"%s\" into tokens:\n",buf);
+        //printf ("Splitting string \"%s\" into tokens:\n",buf);
         pch = strtok (buf," ,");
         float ftemp[16];
         int i = 0;
@@ -415,7 +429,6 @@ void SerialDriver::draw()
             i++;
         }
       
-        
         //print details of the client/peer and the data received
         //printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
         //printf("Data: %s\n" , buf);
@@ -427,16 +440,16 @@ void SerialDriver::draw()
         rot.fromMatrix(mrot);
         rot.normalize();
         
-        
-
         VecCoord& posDOF =*(objectsMechTemp[0]->x.beginEdit());
             //posDOF.resize(NVISUALNODE+1);
             posDOF[1].getCenter()[0] =  posDOFEST_X + ftemp[12]*0.01;
             posDOF[1].getCenter()[1] =  posDOFEST_Y + ftemp[13]*0.01;
             posDOF[1].getCenter()[2] =  posDOFEST_Z + ftemp[14]*0.01;
-
+            posDOF[1].getCenter() =  posDOF[1].getCenter() - positionBase.getValue();
             //std::cout << "Orientation: " << posDOF[1].getOrientation()[1] << std::endl;
             posDOF[1].getOrientation() =  rot;
+
+            posDOF[1].getCenter() =  posDOF[1].getCenter() + positionBase.getValue();
             //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
         objectsMechTemp[0]->x.endEdit();
 
@@ -447,37 +460,7 @@ void SerialDriver::draw()
             std::cout << "Error" << std::endl;
         }
         //close(s);
-
-        /*//VecCoord& posD =(*posDevice.beginEdit());
-        if (serial_fd!=-1){
-            float n1;
-            float n;
-            int flush = tcflush(serial_fd,TCIOFLUSH);
-            n = serial_read(serial_fd,data,CMD_LEN,TIMEOUT);
-            flush = tcflush(serial_fd,TCIOFLUSH);
-            //n = n*0.01f;
-
-            n1 =  atof(data)*0.5;
-
-            VecCoord& posDOF =*(objectsMechTemp[0]->x.beginEdit());
-                posDOF.resize(NVISUALNODE+1);
-                posDOF[1].getCenter()[2] =  posDOFEST + n1;
-                //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
-            objectsMechTemp[0]->x.endEdit();
-
-        }*/
-        //std::cout << posDOF[1].getCenter()[2] << std::endl;
-        //for(int i=0;i<NVISUALNODE;i++)
-        //{+ 0.01f
-        //  if(omniVisu.getValue() || i>6)
-        //  {
-        //      visualNode[i].visu->drawVisual();
-        //      visualNode[i].mapping->draw();
-        //  }
-        //}
-        //rigidDOF->x.endEdit();
     }
-	//std::cout<<"SerialDriver::draw() is called" <<std::endl;	
 }
 
 void SerialDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre){
@@ -510,113 +493,6 @@ void SerialDriver::handleEvent(core::objectmodel::Event *event){
         onKeyReleasedEvent(kre);
     }
 }
-
-//*******************************************************************************************
-//*******************************************************************************************
-//*******************************************************************************************
-
-int  SerialDriver::serial_open(char *serial_name, speed_t baud){
-    struct termios newtermios;
-    int fd;
-
-  // Open the serial port
-    fd = open(serial_name,O_RDWR | O_NOCTTY); 
-
-    // Configure the serial port attributes: 
-    //   -- No parity
-    //   -- 8 data bits
-    //   -- other things...
-    newtermios.c_cflag= CBAUD | CS8 | CLOCAL | CREAD;
-    newtermios.c_iflag=IGNPAR;
-    newtermios.c_oflag=0;
-    newtermios.c_lflag=0;
-    newtermios.c_cc[VMIN]=1;
-    newtermios.c_cc[VTIME]=0;
-
-    // Set the speed
-    cfsetospeed(&newtermios,baud);
-    cfsetispeed(&newtermios,baud);
-  
-    // flush the input buffer
-    if (tcflush(fd,TCIFLUSH)==-1) {
-        return -1;
-    }
-
-    // flush the output buffer
-    if (tcflush(fd,TCOFLUSH)==-1) {
-        return -1;
-    }
-
-    //-- Configure the serial port now!!
-    if (tcsetattr(fd,TCSANOW,&newtermios)==-1) {
-        return -1;
-    }  
-
-    //-- Return the file descriptor
-    return fd;
-}
-
-void SerialDriver::serial_send(int serial_fd, char *data, int size){
-    serial_fd = 0;
-    data = NULL;
-    size = 0;
-}
-
-int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_usec)
-{
-    fd_set fds;
-    struct timeval timeout;
-    bool band = false;
-    int count=0;
-    int ret;
-    int n;
-
-    //-- Wait for the data. A block of size bytes is expected to arrive
-    //-- within the timeout_usec time. This block can be received as 
-    //-- smaller blocks.
-    do {
-        //-- Set the fds variable to wait for the serial descriptor
-        FD_ZERO(&fds);
-        FD_SET (serial_fd, &fds);
-
-        //-- Set the timeout in usec.
-        timeout.tv_sec = 0;  
-        timeout.tv_usec = timeout_usec;
-
-        //-- Wait for the data
-        ret=select (FD_SETSIZE,&fds, NULL, NULL,&timeout);
-        //-- If there are data waiting: read it
-        if (ret==1){
-            //-- Read the data (n bytes)
-            n=read (serial_fd, &data[count], 1);
-            
-            if(band){
-                if(data[count] != ' '){
-                    if(data[count] == '\n'){
-                        data[count]='\0';
-                        return count;
-                    }
-                    //-- The number of bytes receives is increased in n
-                    count+=n;
-                }
-            }
-            if(!band && data[count] == '\n'){
-              band = true;
-            }
-            //-- The last byte is always a 0 (for printing the string data)
-            data[count]=0;
-        }
-
-        //-- Repeat the loop until a data block of size bytes is received or
-        //-- a timeout occurs
-    } while (count<size && ret==1);
-
-    //-- Return the number of bytes reads. 0 If a timeout has occurred.
-    return count;
-}
-
-void serial_close(int fd);
-
 
 int SerialDriverClass = sofa::core::RegisterObject("This component does nothing.").add<SerialDriver>();
 

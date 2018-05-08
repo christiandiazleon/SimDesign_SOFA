@@ -209,16 +209,16 @@ private:
     float posDOFEST_X;
     float posDOFEST_Y;
     float posDOFEST_Z;
+
+    float posROT1;
+    float posROT2;
+    float posROT3;
+    float posROT4;
+    
     void handleEvent(core::objectmodel::Event *);
     bool noDevice;
 
     void die(char *s);
-
-    //Serial Functions
-    int  serial_open(char *serial_name, speed_t baud);
-	void serial_send(int serial_fd, char *data, int size);
-	int  serial_read(int serial_fd, char *data, int size, int timeout_usec);
-	void serial_close(int fd);
 };
 }
 }
