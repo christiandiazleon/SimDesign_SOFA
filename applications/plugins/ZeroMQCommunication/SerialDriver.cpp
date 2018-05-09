@@ -112,6 +112,8 @@ void SerialDriver::setForceFeedback(ForceFeedback *ff)
 void SerialDriver::init()
 {
     std::cout << "Entrando al metodo init del Serial Driver.cpp" << std::endl;
+    
+    n1 = 0.0f;
 
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
 
@@ -329,7 +331,6 @@ void SerialDriver::draw()
         //VecCoord& posD =(*posDevice.beginEdit());
         if (serial_fd != -1)
         {
-            float n1;
             float n;
             int flush = tcflush(serial_fd, TCIOFLUSH);
             n = serial_read(serial_fd, data, CMD_LEN, TIMEOUT);
@@ -360,13 +361,15 @@ void SerialDriver::draw()
         //}
         //rigidDOF->x.endEdit();
     }
+
+    std::cout << "Serial Driver draw n1: " << n1 << std::endl;
     //std::cout<<"SerialDriver::draw() is called" <<std::endl;
 }
 
 float SerialDriver::askDevice()
 {
-    std::cout << "Entrando al metodo askDevice " << std::endl;
-    float n1 = -1;
+    /*std::cout << "Entrando al metodo askDevice " << std::endl;
+    // float n1 = -1;
     if (serial_fd != -1)
     {
         // float n1;
@@ -384,7 +387,8 @@ float SerialDriver::askDevice()
         cout << "este es n1 en donde estan los datos leidos del hapkit" << n1 << std::endl;
         return n1;
     }
-    return n1;
+    return n1;*/
+    return 0.0f;
 }
 
 void SerialDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)

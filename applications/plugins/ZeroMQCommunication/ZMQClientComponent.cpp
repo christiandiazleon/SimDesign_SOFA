@@ -235,16 +235,17 @@ void ZMQClientComponent::init()
 void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 {
     std::cout
-        << "Draw del ZMQ" << std::endl;
+        << "Draw del ZMQ parameters" << std::endl;
 
-    float a = s->askDevice();
+    //float a = s->askDevice();
+    float a = s->getTraslValue();
     std::cout << "datos del hapkit" << a << std::endl;
 }
 
 void ZMQClientComponent::draw()
 {
     std::cout
-        << "Draw del ZMQ" << std::endl;
+        << "Draw del ZMQ solo" << std::endl;
 
     instrumentData itemp;
     itemp.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);

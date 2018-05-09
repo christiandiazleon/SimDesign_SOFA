@@ -144,6 +144,8 @@ public:
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *DOFs;
     sofa::component::visualmodel::BaseCamera::SPtr camera;
 
+    float getTraslValue(){return n1;}
+
     bool initVisu;
 
     SerialData data_s;
@@ -207,6 +209,8 @@ private:
     float posDOFEST;
     void handleEvent(core::objectmodel::Event *);
     bool noDevice;
+
+    float n1;
 
     //Serial Functions
     int  serial_open(char *serial_name, speed_t baud);
