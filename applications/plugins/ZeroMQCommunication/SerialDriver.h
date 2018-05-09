@@ -145,6 +145,7 @@ public:
     sofa::component::visualmodel::BaseCamera::SPtr camera;
 
     float getTraslValue(){return n1;}
+    float getPositionInstrument(){return positionInstrument;}
 
     bool initVisu;
 
@@ -211,6 +212,9 @@ private:
     bool noDevice;
 
     float n1;
+
+    // creado para guardar la poscion del hapkit
+    float positionInstrument;
 
     //Serial Functions
     int  serial_open(char *serial_name, speed_t baud);
