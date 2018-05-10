@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<Node name="lroot" dt="0.02" gravity="0 -9.8 0" >
+    <LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="FrictionContact" />
+    <CollisionGroup />
+    <DiscreteIntersection/>
+
+    <!-- <Node name="AttachOneWay"> -->
+        <Node name="Intern">
+            <EulerImplicitSolver name="cg_odesolver"  />
+            <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+            <MeshGmshLoader name="meshLoader" filename="../meshes/phantomTrial.msh" />
+            <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+            <MechanicalObject name="dofs" src="@meshLoader" /> 
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <DiagonalMass  name="computed using mass density" massDensity="1" />
+            <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+            <FixedConstraint indices="6 13 73 240" />
+            <Node name="Visu" tags="Visual">
+                <OglModel  name="VisualModel" fileMesh="../objects/phantomTrial.obj" />
+                <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
+            </Node>
+            <Node name="Surf">
+                <MeshObjLoader name="loader" filename="../objects/phantomTrial.obj" />
+                <Mesh src="@loader" />
+                <MechanicalObject src="@loader" name="CollisModel" />
+                <Triangle  selfCollision="0" />
+                <Line    selfCollision="0" />
+                <Point  selfCollision="0" />
+                <BarycentricMapping input="@.." output="@." />
+            </Node>
+        </Node>  
+
+        <!-- </Node> -->
+
+        <!-- <CustomAttachConstraint object1="@Extern" object2="@Intern" radius="0.1" indices1="32 33 34 35 36 37 38 39 40 41 42 43 44 45 46" indices2="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" IsBreakable="true" minDistance = "0.01"/> -->
+    </Node>
+</Node>
+

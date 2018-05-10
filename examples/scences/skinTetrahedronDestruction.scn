@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<Node name="lroot" dt="0.02" gravity="0 -9.8 0" >
+    <LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline depth="15" verbose="0" draw="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionResponse name="Response" response="FrictionContact" />
+    <CollisionGroup />
+    <DiscreteIntersection/>
+
+    <!-- <Node name="AttachOneWay"> -->
+        <Node name="Skin">
+            <EulerImplicit name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <MeshGmshLoader name="loader" filename="../meshes/phantomTrial.msh" />
+            <MechanicalObject src="@loader" name="Volume" />
+            <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
+            <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <DiagonalMass massDensity="0.5" />
+            <FixedConstraint indices="0 200 99 336 999 154" />
+            <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3" method="large" />
+            <Node name="T">
+                <TriangleSetTopologyContainer name="Triangle_topo" />
+                <TriangleSetTopologyModifier name="Modifier" />
+                <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+                <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+                <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" />
+                <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
+                <TrianglePressureForceField normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0.4 0 0" />
+                <TriangleSet />
+                <Node name="Visu">
+                    <VisualModel name="Visual" material="texture Ambient 1 0.4 0.1 0.0 1.0 Diffuse 1 0.1 0.0 0.0 1.0 Specular 1 0.1 0.1 0.0 1.0 Emissive 1 0.1 0.1 0.0 1.0 Shininess 1 25" />
+                    <IdentityMapping input="@../../Volume" output="@Visual" />
+                </Node>
+            </Node>
+        </Node>  
+
+        <!-- </Node> -->
+
+        <!-- <CustomAttachConstraint object1="@Extern" object2="@Intern" radius="0.1" indices1="32 33 34 35 36 37 38 39 40 41 42 43 44 45 46" indices2="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" IsBreakable="true" minDistance = "0.01"/> -->
+</Node>

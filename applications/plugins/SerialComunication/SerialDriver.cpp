@@ -425,6 +425,7 @@ void SerialDriver::draw()
         {
             ftemp[i] = atof(pch);
             std::cout << ftemp[i] << std::endl;
+            //printf ("%s\n",pch);
             pch = strtok (NULL, " ,");
             i++;
         }
