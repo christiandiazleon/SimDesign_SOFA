@@ -546,8 +546,9 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
     } while (count < size && ret == 1);
 
     //-- Return the number of bytes reads. 0 If a timeout has occurred.
-    return count;
     std::cout << "Saliendo del metodo serial_read " << std::endl;
+    return count;
+    
 }
 
 void serial_close(int fd);
