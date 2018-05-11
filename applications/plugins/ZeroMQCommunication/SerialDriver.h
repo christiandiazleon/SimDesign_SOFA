@@ -211,10 +211,11 @@ private:
     void handleEvent(core::objectmodel::Event *);
     bool noDevice;
 
-    float n1;
+    //float n1;
+    double n1;
 
     // creado para guardar la poscion del hapkit
-    float positionInstrument;
+    double positionInstrument;
 
     //Serial Functions
     int  serial_open(char *serial_name, speed_t baud);

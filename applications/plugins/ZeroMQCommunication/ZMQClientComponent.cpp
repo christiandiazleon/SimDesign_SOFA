@@ -175,8 +175,10 @@ void ZMQClientComponent::attachingDataToSend(attachingData b)
     
 }
 
+
 void ZMQClientComponent::init()
 {
+    //fun();
 
     /* We get the rootContext */
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
@@ -230,8 +232,6 @@ void ZMQClientComponent::init()
 {
 }*/
 
-
-
 void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 {
     std::cout
@@ -239,7 +239,8 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 
     //float a = s->askDevice();
     float a = s->getTraslValue();
-    std::cout << "datos del hapkit" << a << std::endl;
+    std::cout << "datos del hapkit " << a << std::endl;
+    printf("%.3f", a);
 }
 
 void ZMQClientComponent::draw()
@@ -247,6 +248,7 @@ void ZMQClientComponent::draw()
     std::cout
         << "Draw del ZMQ solo" << std::endl;
 
+    /*
     instrumentData itemp;
     itemp.pos = sofa::defaulttype::Vec3d(1.0f, 1.0f, 1.0f);
     itemp.quat = defaulttype::Quat(1.0f, 1.0f, 4.0f, 1.0f);
@@ -255,7 +257,7 @@ void ZMQClientComponent::draw()
     itemp.blnDataReady = true;
     
     cout << itemp.btnState;
-
+    */
     // SofaTypeMessages a;
     // a.instrumentDataSend(itemp);
       

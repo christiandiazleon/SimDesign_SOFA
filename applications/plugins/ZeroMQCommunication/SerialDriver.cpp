@@ -16,7 +16,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 using std::cout;
 using std::endl;
@@ -68,7 +69,9 @@ static sofa::helper::system::atomic<int> doUpdate;
 
 int serial_fd;          //-- Serial port descriptor
 char data[CMD_LEN + 1]; //-- The received command
-char path[15] = "/dev/ttyUSB0";
+//string data;
+
+    char path[15] = "/dev/ttyUSB0";
 float n2 = 0.0;
 
 int SerialDriver::initDevice()
@@ -332,23 +335,30 @@ void SerialDriver::draw()
         if (serial_fd != -1)
         {
             float n;
+            float n4;
             int flush = tcflush(serial_fd, TCIOFLUSH);
             n = serial_read(serial_fd, data, CMD_LEN, TIMEOUT);
             
             // este parametro data es de la escena, son como las coordenadas o posicion del instrumento
             // cambia cuando muevo la escena con el mouse en sofa
-            
-            std::cout << data << std::endl;
+
+            std::cout << "Dato traido desde el serial_read " << data << std::endl;
+            std::cout << "tipo de dato de data" << typeid(data).name() << std::endl;
             flush = tcflush(serial_fd, TCIOFLUSH);
             //n = n*0.01f;
-
-            n1 = atof(data) * 0.5;
+            n4 = atof(data);
+            cout << "Este es n4 " << n4 << std::endl;
+            n1 = atof(data) * 0.5f;
+            // se multiplica por 0.5 para escalar el dato que se lee y mejorar la precision
+            // con respecto a lo que se lee y se mueve en el hapkit y la escena
+            cout << "Este es n1 que tiene a data turn it " << n1 << std::endl;
 
             VecCoord &posDOF = *(objectsMechTemp[0]->x.beginEdit());
             posDOF.resize(NVISUALNODE + 1);
 
             // en el draw se convierte ese data positon instrumen a  float 
             positionInstrument = atof(data);
+            //positionInstrument = sscanf(data, "%f", n1);
             posDOF[1].getCenter()[2] = posDOFEST + n1;
             //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
             objectsMechTemp[0]->x.endEdit();
@@ -366,6 +376,7 @@ void SerialDriver::draw()
     }
 
     std::cout << "Serial Driver draw n1: " << n1 << " " << positionInstrument << std::endl;
+    printf("%.3f", positionInstrument);
     //std::cout<<"SerialDriver::draw() is called" <<std::endl;
 }
 
@@ -444,7 +455,7 @@ int SerialDriver::serial_open(char *serial_name, speed_t baud)
     //   -- other things...
     newtermios.c_cflag = CBAUD | CS8 | CLOCAL | CREAD;
     newtermios.c_iflag = IGNPAR;
-    newtermios.c_oflag = 0;
+    `serial_read` newtermios.c_oflag = 0;
     newtermios.c_lflag = 0;
     newtermios.c_cc[VMIN] = 1;
     newtermios.c_cc[VTIME] = 0;
@@ -477,6 +488,7 @@ int SerialDriver::serial_open(char *serial_name, speed_t baud)
 
 void SerialDriver::serial_send(int serial_fd, char *data, int size)
 {
+    std::cout << "Ha entrado a serial_send " << std::endl;
     serial_fd = 0;
     data = NULL;
     size = 0;
@@ -547,6 +559,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
 
     //-- Return the number of bytes reads. 0 If a timeout has occurred.
     std::cout << "Saliendo del metodo serial_read " << std::endl;
+    std::cout << "Este es count " << count << std::endl;
     return count;
     
 }
