@@ -11,7 +11,6 @@
 #include <random>
 #include "ZMQClientComponent.h"
 //#include "SofaTypeMessages.h"
-
 using namespace std;
 
 namespace sofa
@@ -193,7 +192,8 @@ void ZMQClientComponent::init()
               << endl;
     std::cout << "Este es el elemento 0 de mi vector Serial Driver: " << objectsSerialDriver[0]->name.getValue() << " \n\n"
               << endl;
-
+    std::cout << "Este es la posicion del hapkit: " << objectsSerialDriver[0]->getPositionInstrument() << " \n\n"
+              << endl;
     //SerialDriver* s = new SerialDriver();
 
     std::cout << "ZeroMQCommunication::init()" << std::endl;
@@ -238,9 +238,11 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
         << "Draw del ZMQ parameters" << std::endl;
 
     //float a = s->askDevice();
-    float a = s->getTraslValue();
+    //float a = s->getTraslValue();
+    float a = objectsSerialDriver[0]->getPositionInstrument();
+
     std::cout << "datos del hapkit " << a << std::endl;
-    printf("%.3f", a);
+    printf("%.3f", a+2 );
 }
 
 void ZMQClientComponent::draw()

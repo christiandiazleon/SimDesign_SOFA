@@ -18,6 +18,8 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstdlib>
+#include <cstdio>
 using namespace std;
 using std::cout;
 using std::endl;
@@ -71,7 +73,7 @@ int serial_fd;          //-- Serial port descriptor
 char data[CMD_LEN + 1]; //-- The received command
 //string data;
 
-    char path[15] = "/dev/ttyUSB0";
+char path[15] = "/dev/ttyUSB0";
 float n2 = 0.0;
 
 int SerialDriver::initDevice()
@@ -114,7 +116,7 @@ void SerialDriver::setForceFeedback(ForceFeedback *ff)
 
 void SerialDriver::init()
 {
-    std::cout << "Entrando al metodo init del Serial Driver.cpp" << std::endl;
+    std::cout << "Enter to init method - SerialDriver.cpp" << std::endl;
     
     n1 = 0.0f;
 
@@ -328,36 +330,38 @@ void SerialDriver::draw(const core::visual::VisualParams *vparam)
 
 void SerialDriver::draw()
 {
-    std::cout << "Entrando al metodo draw solo del SerialDriver.cpp " << std::endl;
+    std::cout << "Enter to draw method - SerialDriver.cpp " << std::endl;
     if (initVisu)
     {
         //VecCoord& posD =(*posDevice.beginEdit());
         if (serial_fd != -1)
         {
             float n;
-            float n4;
             int flush = tcflush(serial_fd, TCIOFLUSH);
             n = serial_read(serial_fd, data, CMD_LEN, TIMEOUT);
             
             // este parametro data es de la escena, son como las coordenadas o posicion del instrumento
             // cambia cuando muevo la escena con el mouse en sofa
 
-            std::cout << "Dato traido desde el serial_read " << data << std::endl;
-            std::cout << "tipo de dato de data" << typeid(data).name() << std::endl;
+            std::cout << "Data brought from serial_read method " << data << std::endl;
             flush = tcflush(serial_fd, TCIOFLUSH);
             //n = n*0.01f;
-            n4 = atof(data);
-            cout << "Este es n4 " << n4 << std::endl;
+            
+            //cout << "Applying sscanf " << std::endl;
+            //sscanf(data, "%f", &n1);
+            //printf("%.3f" "%s", n1, "  ");
+
             n1 = atof(data) * 0.5f;
             // se multiplica por 0.5 para escalar el dato que se lee y mejorar la precision
             // con respecto a lo que se lee y se mueve en el hapkit y la escena
-            cout << "Este es n1 que tiene a data turn it " << n1 << std::endl;
+            printf("%.3f", n1);
+            cout << "n1 value which have data turn it " << n1 << std::endl;
 
             VecCoord &posDOF = *(objectsMechTemp[0]->x.beginEdit());
             posDOF.resize(NVISUALNODE + 1);
 
             // en el draw se convierte ese data positon instrumen a  float 
-            positionInstrument = atof(data);
+            positionInstrument = atof(data) * 0.5f;
             //positionInstrument = sscanf(data, "%f", n1);
             posDOF[1].getCenter()[2] = posDOFEST + n1;
             //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
@@ -455,7 +459,7 @@ int SerialDriver::serial_open(char *serial_name, speed_t baud)
     //   -- other things...
     newtermios.c_cflag = CBAUD | CS8 | CLOCAL | CREAD;
     newtermios.c_iflag = IGNPAR;
-    `serial_read` newtermios.c_oflag = 0;
+    newtermios.c_oflag = 0;
     newtermios.c_lflag = 0;
     newtermios.c_cc[VMIN] = 1;
     newtermios.c_cc[VTIME] = 0;
@@ -488,7 +492,7 @@ int SerialDriver::serial_open(char *serial_name, speed_t baud)
 
 void SerialDriver::serial_send(int serial_fd, char *data, int size)
 {
-    std::cout << "Ha entrado a serial_send " << std::endl;
+    std::cout << "Enter to serial_send " << std::endl;
     serial_fd = 0;
     data = NULL;
     size = 0;
@@ -496,7 +500,7 @@ void SerialDriver::serial_send(int serial_fd, char *data, int size)
 
 int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_usec)
 {
-    std::cout << "Entrando al metodo serial_read " << std::endl;
+    std::cout << "Enter to serial_read method " << std::endl;
     fd_set fds;
     struct timeval timeout;
     bool band = false;
@@ -504,7 +508,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
     int ret;
     int n;
 
-    std::cout << "Han sido definidas las variables en serial_read " << std::endl;
+    // std::cout << "Han sido definidas las variables en serial_read " << std::endl;
 
     //-- Wait for the data. A block of size bytes is expected to arrive
     //-- within the timeout_usec time. This block can be received as
@@ -518,7 +522,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
         //-- Set the timeout in usec.
         timeout.tv_sec = 0;
         timeout.tv_usec = timeout_usec;
-        std::cout << "timeouts establecidos " << std::endl;
+        // std::cout << "timeouts establecidos " << std::endl;
 
         //-- Wait for the data
         ret = select(FD_SETSIZE, &fds, NULL, NULL, &timeout);
@@ -528,7 +532,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
             //-- Read the data (n bytes)
             n = read(serial_fd, &data[count], 1);
             // read viene de sofa/src/applications/plugins/SofaPML/argumentParser.h
-            std::cout << "Entrando al metodo read para leer el serial " << std::endl;
+            std::cout << "Enter to read method to read hapkit data via serial port " << std::endl;
 
             if (band)
             {
@@ -542,7 +546,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
                     //-- The number of bytes receives is increased in n
                     count += n;
                 }
-                std::cout << "Numero de bytes recibidos " << count << std::endl;
+                // std::cout << "Numero de bytes recibidos " << count << std::endl;
             }
             if (!band && data[count] == '\n')
             {
@@ -551,15 +555,15 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
             //-- The last byte is always a 0 (for printing the string data)
             data[count] = 0;
         }
-        std::cout << "Valores de band " << band << " y data " << data << std::endl;
+        std::cout << "band value: " << band << " and data: " << data << std::endl;
 
         //-- Repeat the loop until a data block of size bytes is received or
         //-- a timeout occurs
     } while (count < size && ret == 1);
 
     //-- Return the number of bytes reads. 0 If a timeout has occurred.
-    std::cout << "Saliendo del metodo serial_read " << std::endl;
-    std::cout << "Este es count " << count << std::endl;
+    std::cout << "Leaving serial_read method " << std::endl;
+    std::cout << "count value " << count << std::endl;
     return count;
     
 }
