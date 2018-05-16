@@ -70,6 +70,7 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
 
     /* Send some data to ZMQ external Server  */
     void instrumentDataSend(instrumentData a);
+    void hapkitDataSend();
     void attachingDataToSend(attachingData b);
 
 
@@ -99,6 +100,7 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     struct timeval t_before, t_after;
     string replyMessage;
     SerialDriver *s = new SerialDriver();
+    string hapkitValue;
 };
 
 

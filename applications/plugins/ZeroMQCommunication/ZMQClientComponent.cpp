@@ -43,7 +43,7 @@ ZMQClientComponent::ZMQClientComponent()
 // : myparam(initData(&myparam, (double)(0.42), "myparam", "ZeroMq version plugin. "))
 // , d_address(initData(&d_address, (std::string)"127.0.0.1", "address", "Scale for object display. (default=localhost)"))
 {
-    
+
 }
 
 void ZMQClientComponent::setupConnection()
@@ -55,7 +55,7 @@ void ZMQClientComponent::setupConnection()
 
     /**pushEndpoint is the enpoint through clients send SOFA data events to
      * Network Manager and this in turn redirects them to all connected clients
-     * via publisherEndpoint socket  
+     * via publisherEndpoint socket
     */
     const string pushEndpoint = "tcp://localhost:5558";
 
@@ -65,19 +65,30 @@ void ZMQClientComponent::setupConnection()
     cout << "Connecting to ZMQ Network Manager   " << publisherEndpoint << "..." << endl;
     subscriber.connect("tcp://localhost:5557");
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
-    
+
     /**
      * Connecting to publisherEndpoint and pushEndpoint
     */
     sender.connect("tcp://localhost:5558");
 
     // Set the identity http://api.zeromq.org/4-2:zmq-setsockopt
-    //client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);    
-    
+    //client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);
+
 }
 
+void ZMQClientComponent::hapkitDataSend()
+{
+    float a = objectsSerialDriver[0]->getPositionInstrument();
+
+    std::cout << "datos del hapkit " << a << std::endl;
+    hapkitValue = to_string(a);
+    s_send(sender, hapkitValue);
+    cout << "Datos enviados" << endl;
+}
+
+
 void ZMQClientComponent::instrumentDataSend(instrumentData a)
-{   
+{
     std::cout << "enviando datos de instrument: " << endl;
 
     a.pos = sofa::defaulttype::Vec3d(2.0f, 1.0f, 1.0f);
@@ -87,7 +98,7 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
     a.blnDataReady = false;
 
     /* Strings to store instrumentData members */
-    string posVector0, posVector1, posVector2, allPosVector, 
+    string posVector0, posVector1, posVector2, allPosVector,
         quatQuat0, quatQuat1, quatQuat2, quatQuat3, allQuatQuat,
         btnStateStr, openInstStr, blnDataReadyStr, allInstrumentData;
 
@@ -114,7 +125,7 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
     allQuatQuat = " -> quatQuat elements: " + quatQuat0 + " " + quatQuat1 + " " + quatQuat2 + " " + quatQuat3 + " | ";
 
     /* Grouping instrumentDataStr */
-    allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " " 
+    allInstrumentData = allPosVector + " " + allQuatQuat + " " + btnStateStr + " " + openInstStr + " "
     + blnDataReadyStr;
 
     // sleep(1);
@@ -122,14 +133,14 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
 
     /**
      * Send message from ZMQ_DEALER
-     *ZMQ_SNDMORE is multipart message. --- 
+     *ZMQ_SNDMORE is multipart message. ---
     */
     //zmq::message_t message;
     //client.send(message);
     //s_sendmore(client, "");
-    
+
     //  Wait for next request from client
-    
+
     /*
     while(1){
         // std::string string = s_recv(subscriber);
@@ -141,7 +152,7 @@ void ZMQClientComponent::instrumentDataSend(instrumentData a)
         s_send(sender, allInstrumentData);
     }
     */
-    
+
 }
 
 
@@ -159,19 +170,19 @@ void ZMQClientComponent::attachingDataToSend(attachingData b)
     // cout << "The total of elements is: " << total << endl;
     vIdTrianglesStr0 = to_string(b.vIdTriangles[0]);
 
-    
-    // Sending data with ZMQ 
-    
+
+    // Sending data with ZMQ
+
     //zmq::message_t request(vIdTrianglesStr0.size());
-    
+
     // tener en cuenta esto http://zguide.zeromq.org/page:all#A-Minor-Note-on-Strings
 
     //std::copy_n(vIdTrianglesStr0.c_str(), vIdTrianglesStr0.size() + 1, reinterpret_cast<char *>(request.data()));
     //socket.send(request);
-    
+
     s_send(sender, vIdTrianglesStr0);
-    
-    
+
+
 }
 
 
@@ -198,22 +209,23 @@ void ZMQClientComponent::init()
 
     std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQClientComponent z;
-    
+
     // Connecting to Nerwork Manager
     z.setupConnection();
 
+
     // float a = s->askDevice();
     // std::cout << "datos del hapkit" << a << std::endl;
-    
-    
+
+
 
     // Creating instrument data object
     // instrumentData itemp;
-    
+
     // Creating attaching data object
     // attachingData n;
-    
-    
+
+
 
     /*
     ***** Envio de datos de instrumento y de attaching usando las estructuras***
@@ -237,12 +249,21 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
     std::cout
         << "Draw del ZMQ parameters" << std::endl;
 
+
+    // ZMQClientComponent z;
+    hapkitDataSend();
+
     //float a = s->askDevice();
     //float a = s->getTraslValue();
+
+    /*
     float a = objectsSerialDriver[0]->getPositionInstrument();
 
     std::cout << "datos del hapkit " << a << std::endl;
-    printf("%.3f", a+2 );
+    hapkitValue = to_string(a);
+    s_send(sender, hapkitValue);
+    cout << "Datos enviados" << endl;
+    */
 }
 
 void ZMQClientComponent::draw()
@@ -257,12 +278,12 @@ void ZMQClientComponent::draw()
     itemp.btnState = 5671;
     itemp.openInst = 1.0f;
     itemp.blnDataReady = true;
-    
+
     cout << itemp.btnState;
     */
     // SofaTypeMessages a;
     // a.instrumentDataSend(itemp);
-      
+
 }
 
 
