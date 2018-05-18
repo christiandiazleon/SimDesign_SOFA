@@ -48,21 +48,21 @@
     <Node name="Uterus">
         <MeshGmshLoader name="meshLoader" filename="mesh/Utero_V2/Utero_Mesh_V4.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
-        <MechanicalObject name="dofs" src="@meshLoader" translation="-0.1 -3.5 -7"/>
+        <MechanicalObject name="dofs" src="@meshLoader" translation="10 -3.5 -7"/>
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass  name="computed using mass density" massDensity="1" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <FixedConstraint  name="FixedConstraint" indices="25 102 103 104 11 111" />
 
         <Node name="Visu" tags="Visual">
-            <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/Utero_Alone_V2.obj" translation="-0.1 -3.5 -7"/>
+            <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/Utero_Alone_V2.obj" translation="10 -3.5 -7"/>
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
 
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/Utero_V2/Utero_Alone_V2.obj" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" translation="-0.1 -3.5 -7"/>
+            <MechanicalObject src="@loader" name="CollisModel" translation="10 -3.5 -7"/>
             <Triangle  selfCollision="0" />
             <!-- <Line    selfCollision="0" /> -->
             <!-- <Point  selfCollision="0" /> -->

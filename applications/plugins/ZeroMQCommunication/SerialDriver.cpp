@@ -358,13 +358,13 @@ void SerialDriver::draw()
             cout << "n1 value which have data turn it " << n1 << std::endl;
 
             VecCoord &posDOF = *(objectsMechTemp[0]->x.beginEdit());
-            posDOF.resize(NVISUALNODE + 1);
+                posDOF.resize(NVISUALNODE + 1);
 
-            // en el draw se convierte ese data positon instrumen a  float 
-            positionInstrument = atof(data) * 0.5f;
-            //positionInstrument = sscanf(data, "%f", n1);
-            posDOF[1].getCenter()[2] = posDOFEST + n1;
-            //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
+                // en el draw se convierte ese data positon instrumen a  float 
+                positionInstrument = atof(data) * 0.5f;
+                //positionInstrument = sscanf(data, "%f", n1);
+                posDOF[1].getCenter()[2] = posDOFEST + n1;
+                //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
             objectsMechTemp[0]->x.endEdit();
         }
         //std::cout << posDOF[1].getCenter()[2] << std::endl;
