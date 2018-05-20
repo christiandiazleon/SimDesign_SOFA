@@ -52,24 +52,27 @@ void ZMQClientComponent::setupConnection()
      * Network Manager and will receive data driven by SOFA events
      */
     const string publisherEndpoint = "tcp://localhost:5557";
+    //const string publisherEndpoint = "tcp://ec2-34-239-214-140.compute-1.amazonaws.com:5557";
 
     /**pushEndpoint is the enpoint through clients send SOFA data events to
      * Network Manager and this in turn redirects them to all connected clients
      * via publisherEndpoint socket
     */
+    //const string pushEndpoint = "tcp://ec2-34-239-214-140.compute-1.amazonaws.com:5558";
     const string pushEndpoint = "tcp://localhost:5558";
 
     /**
      * Connecting to publisherEndpoint and pushEndpoint
     */
     cout << "Connecting to ZMQ Network Manager   " << publisherEndpoint << "..." << endl;
-    subscriber.connect("tcp://localhost:5557");
+    subscriber.connect("tcp://ec2-34-239-214-140.compute-1.amazonaws.com:5557");
+    //subscriber.connect("tcp://54.89.25.43:5557");
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
     /**
      * Connecting to publisherEndpoint and pushEndpoint
     */
-    sender.connect("tcp://localhost:5558");
+    sender.connect("tcp://ec2-34-239-214-140.compute-1.amazonaws.com:5558");
 
     // Set the identity http://api.zeromq.org/4-2:zmq-setsockopt
     //client.setsockopt(ZMQ_IDENTITY, "PEER1", 5);
