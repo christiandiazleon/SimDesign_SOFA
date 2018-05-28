@@ -1,4 +1,5 @@
-/******************************************************************/
+/******************** *s)
+{
 /* serial.h    Andrés Sánchez.    November, 2017          */
 /*----------------------------------------------------------------*/
 /* Serial communications in SOFA                                 */
@@ -328,6 +329,31 @@ void SerialDriver::draw(const core::visual::VisualParams *vparam)
     draw();
 }
 
+/* stof customized function */
+float stof(const char* s){
+    float rez = 0, fact = 1;
+    if (*s == '-'){
+        s++;
+        fact = -1;
+    }
+    for (int point_seen = 0; *s; s++){
+        if (*s == '.'){
+            point_seen = 1; 
+            continue;
+        }
+    
+    int d = *s - '0';
+    
+    if (d >= 0 && d <= 9){
+        if (point_seen) fact /= 10.0f;
+            rez = rez * 10.0f + (float)d;
+        }
+    }
+
+    return rez * fact;
+}
+
+
 void SerialDriver::draw()
 {
     std::cout << "Enter to draw method - SerialDriver.cpp " << std::endl;
@@ -351,7 +377,8 @@ void SerialDriver::draw()
             //sscanf(data, "%f", &n1);
             //printf("%.3f" "%s", n1, "  ");
 
-            n1 = atof(data) * 0.5f;
+            // n1 = atof(data) * 0.5f;
+            n1 = stof(data) * 0.5f;
             // se multiplica por 0.5 para escalar el dato que se lee y mejorar la precision
             // con respecto a lo que se lee y se mueve en el hapkit y la escena
             printf("%.3f", n1);
@@ -361,7 +388,7 @@ void SerialDriver::draw()
                 posDOF.resize(NVISUALNODE + 1);
 
                 // en el draw se convierte ese data positon instrumen a  float 
-                positionInstrument = atof(data) * 0.5f;
+                positionInstrument = stof(data) * 0.5f;
                 //positionInstrument = sscanf(data, "%f", n1);
                 posDOF[1].getCenter()[2] = posDOFEST + n1;
                 //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
@@ -380,7 +407,7 @@ void SerialDriver::draw()
     }
 
     std::cout << "Serial Driver draw n1: " << n1 << " " << positionInstrument << std::endl;
-    printf("%.3f", positionInstrument);
+    printf("%.6f", positionInstrument);
     //std::cout<<"SerialDriver::draw() is called" <<std::endl;
 }
 
