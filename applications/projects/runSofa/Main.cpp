@@ -381,8 +381,8 @@ int main(int argc, char** argv)
             std::getline(mrulist,fileName);
             mrulist.close();
         }
-        else
-            fileName = "Demos/caduceus.scn";*/
+        else*/
+            //fileName = "Demos/caduceus.scn";
         fileName = "Demos/Cystic_Scene/GynecologyScene.scn";
         //fileName = "Demos/Cystic_Scene/ovary.scn";
         //fileName = "Demos/CNVSSPlugin/CNVSSPluginScene.scn";
