@@ -10,10 +10,21 @@ namespace component
 namespace controller
 {
 
-PointNet::PointNet()
-{
+  //------------------------------------Point---------------------------------------
 
-}
+  PointNet::PointNet(float valX, float valY, float valZ)
+  {
+      X = valX;
+      Y = valY;
+      Z = valZ;
+  }
+
+  PointNet::PointNet()
+  {
+      X = 0.0;
+      Y = 0.0;
+      Z = 0.0;
+  }
 
 }
 

@@ -219,6 +219,7 @@ void ZMQClientComponent::init()
     // Connecting to Nerwork Manager
     z.setupConnection();
     msg.test();
+    msg.SetupReceive();
 
 
     // float a = s->askDevice();
@@ -259,6 +260,7 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 
     // ZMQClientComponent z;
     hapkitDataSend();
+
 
     //float a = s->askDevice();
     //float a = s->getTraslValue();
@@ -305,6 +307,29 @@ msgPointsGroupV3::msgPointsGroupV3()
 {
     NroPointsC = 0;
     startPoint = 0;
+    NbPointsMsg = 20;
+}
+
+bool msgPointsGroupV3::SetupReceive()
+{
+  float data[80];
+  startPoint = (int)data[0];
+  for (int i = 1; i<=NbPointsMsg; i++)
+  {
+    // Llenando el vector que contiene todos los puntos del organo
+    PointNet pTemp(data[i+1], data[i+2], data[i+3]);
+    // vNroPointC.push_back((int)data[i]);
+    PointsC.push_back(pTemp);
+    std::cout << "Vector llenado" << std::endl;
+  }
+  PointNet total = 0;
+  for(int i=0; i<=PointsC.size(); i++)
+  {
+    total+=PointsC[i];
+    std::cout << "PointsC element is: " << total << std::endl;
+  }
+
+  return true;
 }
 void msgPointsGroupV3::test()
 {
