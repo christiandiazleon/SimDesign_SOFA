@@ -1,7 +1,7 @@
 #include <sofa/core/behavior/BaseController.h>
 #include <zmq.hpp>
 #include <sys/time.h>
-#include "PointNet.h"
+#include "SurgicalProtocol.h"
 
 // #include <sofa/core/objectmodel/Data.h>
 // using sofa::core::objectmodel::Data;

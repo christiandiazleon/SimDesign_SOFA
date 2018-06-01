@@ -7,7 +7,7 @@ set(HEADER_FILES
     initZeroMQCommunication.h
     ZMQClientComponent.h
     SerialDriver.h
-    PointNet.h
+    SurgicalProtocol.h
     SofaTypeMessages.h
 )
 
@@ -15,7 +15,7 @@ set(SOURCE_FILES
     initZeroMQCommunication.cpp
     ZMQClientComponent.cpp
     SerialDriver.cpp
-    PointNet.cpp
+    SurgicalProtocol.cpp
     SofaTypeMessages.cpp
 )
 

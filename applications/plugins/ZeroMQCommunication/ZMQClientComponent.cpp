@@ -38,6 +38,8 @@ zmq::socket_t subscriber(context, ZMQ_SUB);
  **/
 zmq::socket_t sender(context, ZMQ_PUSH);
 
+msgPointsGroupV3 msg;
+
 ZMQClientComponent::ZMQClientComponent()
 // : myparam(initData(&myparam, 0.42, "myparam", "ZeroMq version plugin. "))
 // : myparam(initData(&myparam, (double)(0.42), "myparam", "ZeroMq version plugin. "))
@@ -212,11 +214,11 @@ void ZMQClientComponent::init()
 
     std::cout << "ZeroMQCommunication::init()" << std::endl;
     ZMQClientComponent z;
+    //msgPointsGroupV3 msg;
 
     // Connecting to Nerwork Manager
     z.setupConnection();
-
-
+    msg.test();
     // float a = s->askDevice();
     // std::cout << "datos del hapkit" << a << std::endl;
 
@@ -255,6 +257,7 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 
     // ZMQClientComponent z;
     hapkitDataSend();
+    msg.SetupReceive();
 
     //float a = s->askDevice();
     //float a = s->getTraslValue();
