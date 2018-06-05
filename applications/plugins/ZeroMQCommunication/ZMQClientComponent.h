@@ -104,6 +104,18 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
 };
 
 
+class  BodyPointsToBeSent
+{
+  private:
+    //Data for deformable mesh messages
+    std::vector<PointNet> vPoints;
+  
+  public:
+    BodyPointsToBeSent();
+    void ProcessPtsToBeSent();
+};
+
+
 }
 
 }
