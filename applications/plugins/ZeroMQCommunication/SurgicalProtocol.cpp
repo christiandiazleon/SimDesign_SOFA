@@ -44,6 +44,12 @@ void msgPointsGroupV3::test()
 
 bool msgPointsGroupV3::SetupReceive()
 {
+
+    /* Aca lo que debemos ahcer es convertirlo a string cada parte del mensaje
+    para que ZMQ lo envie.**/
+    
+    
+    
     float data[80];
     // startPoint = (int)data[0];
 
@@ -51,7 +57,7 @@ bool msgPointsGroupV3::SetupReceive()
     {
         data[i] = (float)i;
     }
-
+    int cont = 0;
     for (int i = 0; i<=NbPointsMsg; i+=3)
     {
         // Llenando el vector que contiene todos los puntos del organo
@@ -59,7 +65,7 @@ bool msgPointsGroupV3::SetupReceive()
         // vNroPointC.push_back((int)data[i]);
         PointsC[i] = pTemp;
         std::cout << "Guardando " << i << "punto por " << i << "ésima ocasión" << std::endl;
-        std::cout << PointsC[i].getX() << " " << PointsC[i].getY() << " " << PointsC[i].getZ() << std::endl;  
+        std::cout << PointsC[cont].getX() << " " << PointsC[cont].getY() << " " << PointsC[cont].getZ() << std::endl;
         std::cout << PointsC.size() << std::endl;
         /*
         if (PointsC.size() == 20 )
@@ -68,6 +74,7 @@ bool msgPointsGroupV3::SetupReceive()
 
         }
         */
+       cont++;
     }
     // vector<PointNet> total(20, "empty");
     /**

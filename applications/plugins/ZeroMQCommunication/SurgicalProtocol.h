@@ -52,6 +52,8 @@ class msgPointsGroupV3
     msgPointsGroupV3();
     void test();
     bool SetupReceive();
+    void setNroTotalPoints(int value) { NroTotalPoints = value; }
+    void setIDTypeMsgDef(int value) { IDTypeMsgDef = value; }
 };
 
 }
