@@ -117,7 +117,7 @@ void SerialDriver::setForceFeedback(ForceFeedback *ff)
 
 void SerialDriver::init()
 {
-    std::cout << "Enter to init method - SerialDriver.cpp" << std::endl;
+    // std::cout << "Enter to init method - SerialDriver.cpp" << std::endl;
     
     n1 = 0.0f;
 
@@ -307,13 +307,13 @@ void SerialDriver::setDataValue()
 
 void SerialDriver::reset()
 {
-    std::cout << "SerialDriver::reset() is called" << std::endl;
+    // std::cout << "SerialDriver::reset() is called" << std::endl;
     this->reinit();
 }
 
 void SerialDriver::reinit()
 {
-    std::cout << "SerialDriver::reinit() is called" << std::endl;
+    // std::cout << "SerialDriver::reinit() is called" << std::endl;
 
     this->cleanup();
     this->bwdInit();
@@ -324,7 +324,7 @@ void SerialDriver::reinit()
 
 void SerialDriver::draw(const core::visual::VisualParams *vparam)
 {
-    std::cout << "Entrando al metodo draw del SerialDriver.cpp con parametros" << std::endl;
+    // std::cout << "Entrando al metodo draw del SerialDriver.cpp con parametros" << std::endl;
     vparam = NULL;
     draw();
 }
@@ -356,7 +356,7 @@ float stof(const char* s){
 
 void SerialDriver::draw()
 {
-    std::cout << "Enter to draw method - SerialDriver.cpp " << std::endl;
+    // std::cout << "Enter to draw method - SerialDriver.cpp " << std::endl;
     if (initVisu)
     {
         //VecCoord& posD =(*posDevice.beginEdit());
@@ -369,20 +369,17 @@ void SerialDriver::draw()
             // este parametro data es de la escena, son como las coordenadas o posicion del instrumento
             // cambia cuando muevo la escena con el mouse en sofa
 
-            std::cout << "Data brought from serial_read method " << data << std::endl;
+            // std::cout << "Data brought from serial_read method " << data << std::endl;
             flush = tcflush(serial_fd, TCIOFLUSH);
             //n = n*0.01f;
             
-            //cout << "Applying sscanf " << std::endl;
-            //sscanf(data, "%f", &n1);
-            //printf("%.3f" "%s", n1, "  ");
 
             // n1 = atof(data) * 0.5f;
             n1 = stof(data) * 0.5f;
             // se multiplica por 0.5 para escalar el dato que se lee y mejorar la precision
             // con respecto a lo que se lee y se mueve en el hapkit y la escena
-            printf("%.3f", n1);
-            cout << "n1 value which have data turn it " << n1 << std::endl;
+            // printf("%.3f", n1);
+            // cout << "n1 value which have data turn it " << n1 << std::endl;
 
             VecCoord &posDOF = *(objectsMechTemp[0]->x.beginEdit());
                 posDOF.resize(NVISUALNODE + 1);
@@ -406,34 +403,9 @@ void SerialDriver::draw()
         //rigidDOF->x.endEdit();
     }
 
-    std::cout << "Serial Driver draw n1: " << n1 << " " << positionInstrument << std::endl;
+    // std::cout << "Serial Driver draw n1: " << n1 << " " << positionInstrument << std::endl;
     printf("%.6f", positionInstrument);
     //std::cout<<"SerialDriver::draw() is called" <<std::endl;
-}
-
-float SerialDriver::askDevice()
-{
-    /*std::cout << "Entrando al metodo askDevice " << std::endl;
-    // float n1 = -1;
-    if (serial_fd != -1)
-    {
-        // float n1;
-        float n;
-        int flush = tcflush(serial_fd, TCIOFLUSH);
-        n = serial_read(serial_fd, data, CMD_LEN, TIMEOUT);
-
-        // este parametro data es de la escena
-
-        std::cout << data << "aaj" << std::endl;
-        flush = tcflush(serial_fd, TCIOFLUSH);
-        //n = n*0.01f;
-
-        n1 = atof(data) * 0.5;
-        cout << "este es n1 en donde estan los datos leidos del hapkit" << n1 << std::endl;
-        return n1;
-    }
-    return n1;*/
-    return 0.0f;
 }
 
 void SerialDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
@@ -519,7 +491,7 @@ int SerialDriver::serial_open(char *serial_name, speed_t baud)
 
 void SerialDriver::serial_send(int serial_fd, char *data, int size)
 {
-    std::cout << "Enter to serial_send " << std::endl;
+    // std::cout << "Enter to serial_send " << std::endl;
     serial_fd = 0;
     data = NULL;
     size = 0;
@@ -527,7 +499,7 @@ void SerialDriver::serial_send(int serial_fd, char *data, int size)
 
 int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_usec)
 {
-    std::cout << "Enter to serial_read method " << std::endl;
+    // std::cout << "Enter to serial_read method " << std::endl;
     fd_set fds;
     struct timeval timeout;
     bool band = false;
@@ -559,7 +531,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
             //-- Read the data (n bytes)
             n = read(serial_fd, &data[count], 1);
             // read viene de sofa/src/applications/plugins/SofaPML/argumentParser.h
-            std::cout << "Enter to read method to read hapkit data via serial port " << std::endl;
+            // std::cout << "Enter to read method to read hapkit data via serial port " << std::endl;
 
             if (band)
             {
@@ -582,15 +554,15 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
             //-- The last byte is always a 0 (for printing the string data)
             data[count] = 0;
         }
-        std::cout << "band value: " << band << " and data: " << data << std::endl;
+        // std::cout << "band value: " << band << " and data: " << data << std::endl;
 
         //-- Repeat the loop until a data block of size bytes is received or
         //-- a timeout occurs
     } while (count < size && ret == 1);
 
     //-- Return the number of bytes reads. 0 If a timeout has occurred.
-    std::cout << "Leaving serial_read method " << std::endl;
-    std::cout << "count value " << count << std::endl;
+    // std::cout << "Leaving serial_read method " << std::endl;
+    // std::cout << "count value " << count << std::endl;
     return count;
     
 }
