@@ -85,10 +85,16 @@ void ZMQClientComponent::setupConnection()
 
 void ZMQClientComponent::hapkitDataSend()
 {
+    
+    // A traves del objeto SerialDriver, accedemos a la posicion del instrumento con getPositionInstrument
+    // el cual me retorna la posicion del instrumento. La almaceno en a
     float a = objectsSerialDriver[0]->getPositionInstrument();
 
     std::cout << "datos del hapkit " << a << std::endl;
     hapkitValue = to_string(a);
+
+    // strcat(myStringHapkitValue, " ");
+
     s_send(sender, hapkitValue);
     cout << "Datos enviados" << endl;
 }
@@ -235,7 +241,7 @@ void BodyPointsToBeSent::ProcessPtsToBeSent()
         /* Asignamos pTemp a vPoints que es en donde estarán todos los puntos de deformacion*/
         vPoints[i] = pTemp;
         
-        std::cout << "Guardando " << i << "punto por " << i << "ésima ocasión" << std::endl;
+        // std::cout << "Guardando " << i << "punto por " << i << "ésima ocasión" << std::endl;
         /* Guardamos cada elemento en la posicion cont de vPoints para cada x,y,z que posee en su estructura como
         vector tipo PointNet*/
         std::cout << vPoints[cont].getX() << " " << vPoints[cont].getY() << " " << vPoints[cont].getZ() << std::endl;
@@ -251,8 +257,8 @@ void BodyPointsToBeSent::ProcessPtsToBeSent()
 
     //msgPointsGroupV3 msgTemp;
     msg.setNroTotalPoints((int)vPoints.size());
-    std::cout << "Hola, mi vector de puntos tiene" << vPoints.size() << " \n\n"
-              << endl;
+    // std::cout << "Hola, mi vector de puntos tiene" << vPoints.size() << " \n\n"
+    //           << endl;
 
 
     /* Definimos unas variables temporales */
@@ -306,7 +312,7 @@ void BodyPointsToBeSent::ProcessPtsToBeSent()
                 for (unsigned int k = contador; k < vPoints.size(); k++)
             {
                 vPointsTemp[k - contador] = vPoints[k];
-                std::cout << "Finalizando de empaquetar puntos" << endl;
+                // std::cout << "Finalizando de empaquetar puntos" << endl;
 
                 deformationVectorK_X = std::to_string(vPoints[k].getX());
                 std::cout << "Valor de X en string" << deformationVectorK_X << endl;
@@ -345,17 +351,19 @@ void ZMQClientComponent::init()
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
     cout << "rootContext: " << rootContext << endl;
 
-    //este era
+    //este era. Buscamos un objeto Serial Driver.
     getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchRoot);
 
     //rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
 
-    std::cout << "Hola este es el tamaño de mi vector Serial Driver:" << objectsSerialDriver.size() << " \n\n"
+    /*
+     std::cout << "Hola este es el tamaño de mi vector Serial Driver:" << objectsSerialDriver.size() << " \n\n"
               << endl;
     std::cout << "Este es el elemento 0 de mi vector Serial Driver: " << objectsSerialDriver[0]->name.getValue() << " \n\n"
               << endl;
     std::cout << "Este es la posicion del hapkit: " << objectsSerialDriver[0]->getPositionInstrument() << " \n\n"
               << endl;
+    */
     //SerialDriver* s = new SerialDriver();
 
     std::cout << "ZeroMQCommunication::init()" << std::endl;

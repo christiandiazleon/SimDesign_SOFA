@@ -24,8 +24,28 @@ PointNet::PointNet()
     Z = 0.0;
 }
 
+/*--------------------------------msgInstrumentPosition---------------------------------- */
+/*
+Se deben enviar los valores x,y, z (en el hapkit mandare solo uno. x pero pongo todos que es como va a quedar)
+Los quatrernions y el buttonState si fue presionado o no y el openInstrument si esta abierto o no
+todo lo de la estructura instrumentData
+*/
+msgInstrumentPosition::msgInstrumentPosition()
+{
+    instrumentPosition = 0.0;
+}
 
-/*--------------------------------------msgPointsGroup----------------------------------  */
+bool msgInstrumentPosition::SetupSend()
+{
+    // Definimos un buffer de un tamaño grande. Aqui va a quedar todo concatenado
+    // para ser enviado. Buffer es un char, peero con malloc lo que hacemos es reservarle la memoria
+    // en este caso de 1000 posiciones
+    buffer = (char *)malloc(sizeof(char) * 1000);
+
+    char myStringHapkitValue[30];
+}
+
+/*--------------------------------------msgPointsGroup-----------------------------------  */
 msgPointsGroupV3::msgPointsGroupV3()
 {
     NroPointsC = 0;
@@ -64,9 +84,9 @@ bool msgPointsGroupV3::SetupReceive()
         PointNet pTemp(data[i], data[i+1], data[i+2]);
         // vNroPointC.push_back((int)data[i]);
         PointsC[i] = pTemp;
-        std::cout << "Guardando " << i << "punto por " << i << "ésima ocasión" << std::endl;
-        std::cout << PointsC[cont].getX() << " " << PointsC[cont].getY() << " " << PointsC[cont].getZ() << std::endl;
-        std::cout << PointsC.size() << std::endl;
+        // std::cout << "Guardando " << i << "punto por " << i << "ésima ocasión" << std::endl;
+        // std::cout << PointsC[cont].getX() << " " << PointsC[cont].getY() << " " << PointsC[cont].getZ() << std::endl;
+        // std::cout << PointsC.size() << std::endl;
         /*
         if (PointsC.size() == 20 )
         {

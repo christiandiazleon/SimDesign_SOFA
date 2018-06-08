@@ -101,6 +101,7 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     string replyMessage;
     SerialDriver *s = new SerialDriver();
     string hapkitValue;
+    char *buffer; // BUFFER en donde vamos a concatenar todo lo que se envia de posicion del hapkit
 };
 
 

@@ -30,6 +30,34 @@ class PointNet
     float Z;
 };
 
+class Message
+{
+protected: // para que puedan ser accedidas por los metodos de la clase msgInstrumentPosition que heredan de Message
+  int FromIdMachine;
+  int ToIdMachine; //-1 if it is for all machines
+  // 1->Instrument message ---- 2->Collision message ---- 3->DeformableModel Message ---- 4->Attach Clip Messages ----
+  // 5 -> Attaching messages ---- 6 -> Cutting messages ---- 7 ->Carving messages
+  int idTypeMessage;
+  char *buffer;
+  int bufferSize;
+  string bufferStr;
+
+public:
+  void setIDTypeMessage(int value) { idTypeMessage = value; }
+  int getIDTypeMessage() { return idTypeMessage; }
+};
+
+class msgInstrumentPosition : public Message
+{
+  private:
+    float instrumentPosition;
+  public:
+    msgInstrumentPosition();  
+    void setInstrumentPosition(float value) { instrumentPosition = value; }
+    bool SetupSend();
+    bool SetupReceive();
+};
+
 
 class msgPointsGroupV3
 {
