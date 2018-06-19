@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
 <Node name="lroot" gravity="0 0 0" dt="0.02">
-    <EulerImplicitSolver name="cg_odesolver"  />
-    <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
@@ -13,16 +11,20 @@
     <DirectionalLight name="light2" color="1 1 1" direction="1 1 0" />
     <DirectionalLight name="light2" color="1 1 1" direction="-1 -1 0" />
 
-    <RequiredPlugin name="SerialComunication" pluginName="SerialComunication" /> 
-    <SerialDriver name="Serial Driver" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
+    <RequiredPlugin name="SerialComunication" pluginName="SerialComunication" />
+    <SerialDriver name="Serial Driver" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" />
+    <!--<AttachingManager name="Attaching" listening="1" tags="Omni"/> -->
 
     <Node   name="Instrument"  principalGraph="true">
+        <EulerImplicitSolver name="cg_odesolver"  />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"/>
-        <UniformMass template="Rigid" name="mass"  totalmass="0.05" />
-        
+        <!-- <MechanicalObject name="instrumentState" tags="Omni"/> -->
+         <!--<UniformMass template="Rigid" name="mass"  totalmass="0.05" />-->
+
         <Node   name="VisualModel" >
             <OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="mesh/dental_instrument.obj" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
-            
+            <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@../instrumentState"  output="@InstrumentVisualModel" />
         </Node>
 
         <Node name="CollisionModel">
@@ -32,19 +34,23 @@
             <Triangle  selfCollision="0" />
             <Line name="Instrumentline"  />
             <Point name="Instrumentpoint" contactStiffness="0.1"/>
-            
+            <!-- <RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@../instrumentState"  output="@InstrumentColissionState" /> -->
+            <IdentityMapping input="@../instrumentState" output="@InstrumentColissionState" />
+
             <!--<EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.3" normalsPointOut="false"/>-->
         </Node>
     </Node>
 
     <Node name="Uterus">
+        <EulerImplicitSolver name="cg_odesolver"  />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader" filename="mesh/Utero_V2/Utero_Mesh_V4.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
         <MechanicalObject name="dofs" src="@meshLoader" translation="-0.1 -3.5 -7"/>
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass  name="computed using mass density" massDensity="1" />
+        <!--<DiagonalMass  name="computed using mass density" massDensity="1" />-->
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-        <FixedConstraint  name="FixedConstraint" indices="25 102 103 104 11 111" />
+        <!--<FixedConstraint  name="FixedConstraint" indices="25 102 103 104 11 111" />-->
 
         <Node name="Visu" tags="Visual">
             <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/Utero_Alone_V2.obj" translation="-0.1 -3.5 -7"/>
@@ -61,125 +67,5 @@
             <BarycentricMapping input="@.." output="@." />
         </Node>
     </Node>
-    <!--
-    <Node name="Ovary_Left">
-        <MeshGmshLoader name="meshLoader" filename="mesh/Utero_V2/Ovary_Left_Mesh_v3.msh" />
-        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
-        <MechanicalObject name="dofs" src="@meshLoader" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass  name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="5000" computeGlobalMatrix="0" />
-        <FixedConstraint  name="FixedConstraint" indices="3 4 5 6" />
 
-        <Node name="Visu" tags="Visual">
-            <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/Ovary_Left_Alone.obj" />
-            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
-        </Node>
-
-        <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/Utero_V2/Ovary_Left_Alone.obj" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
-            <BarycentricMapping input="@.." output="@." />
-        </Node>
-    </Node>
-
-    <Node name="Ovary_Right">
-        <MeshGmshLoader name="meshLoader" filename="mesh/Utero_V2/Ovary_Right_Mesh_V3.msh" />
-        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader"/>
-        <MechanicalObject name="dofs" src="@meshLoader" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass  name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-        <FixedConstraint  name="FixedConstraint" indices="4 5 6 11" />
-
-        <Node name="Visu" tags="Visual">
-            <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/Ovary_Right_Alone.obj" />
-            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
-        </Node>
-
-        <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/Utero_V2/Ovary_Right_Alone.obj" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
-            <BarycentricMapping input="@.." output="@." />
-        </Node>
-    </Node>
-
-    <Node name="Tube_Right">
-        <MeshGmshLoader name="meshLoader" filename="mesh/Utero_V2/Tube_Right_Mesh.msh" />
-        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
-        <MechanicalObject name="dofs" src="@meshLoader" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass  name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-        <FixedConstraint  name="FixedConstraint" indices="8 142 0 301 168 191 43 122" />
-
-        <Node name="Visu" tags="Visual">
-            <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/Tube_Right_Alone.obj" />
-            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
-        </Node>
-
-        <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/Utero_V2/Tube_Right_Alone.obj" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
-            <BarycentricMapping input="@.." output="@." />
-        </Node>
-    </Node>
-
-    <!-- Changing a scene 
-    <Node name="Tube_Left">
-        <MeshGmshLoader name="meshLoader" filename="mesh/Utero_V2/Tube_Left_Mesh_V2.msh" />
-        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
-        <MechanicalObject name="dofs" src="@meshLoader" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass  name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-        <FixedConstraint  name="FixedConstraint" indices="8 142 0 301 168 191 43 122" />
-
-        <Node name="Visu" tags="Visual">
-            <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/Tube_Left_Alone.obj" />
-            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
-        </Node>
-
-        <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/Utero_V2/Tube_Left_Alone.obj" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
-            <BarycentricMapping input="@.." output="@." />
-        </Node>
-    </Node>
--->
-<!--
-    <Node name="Abdominal_Cavity">
-        <Node name="Visu" tags="Visual">
-            <OglModel  name="VisualModel" fileMesh="mesh/Utero_V2/AbdominalCavity.obj" />
-        </Node>
-        <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/Utero_V2/AbdominalCavity.obj" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="0" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
-            <BarycentricMapping input="@.." output="@." />
-        </Node>
-    </Node>
-
-  <AttachConstraint object1="@Uterus" object2="@Tube_Right" twoWay="true" radius="0.1" indices1="264 510" indices2="328 338" />
-  <AttachConstraint object1="@Uterus" object2="@Tube_Left" twoWay="true" radius="0.1" indices1="271 125" indices2="328 338" />
--->
 </Node>

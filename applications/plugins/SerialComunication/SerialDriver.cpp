@@ -23,14 +23,14 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
- 
+
 #include <sofa/helper/system/thread/CTime.h>
 #ifdef SOFA_HAVE_BOOST
 #include <boost/thread.hpp>
 #endif
 
 #define BUFLEN 512  //Max length of buffer
-#define PORT 8888   //The port on which to listen for incoming data
+#define PORT 8889   //The port on which to listen for incoming data
 
 using namespace std;
 using std::cout;
@@ -92,7 +92,7 @@ float n2 = 0.0;
 
 //Socket Variables
 struct sockaddr_in si_me, si_other;
-     
+
 int s, i,recv_len;
 socklen_t slen = sizeof(si_other);
 
@@ -168,25 +168,26 @@ void SerialDriver::die(char *s)
 void SerialDriver::init(){
 
     //create a UDP socket
-    if ((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+    /*if ((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
     {
         die("socket");
     }
-     
+
     // zero out the structure
     memset((char *) &si_me, 0, sizeof(si_me));
-     
+
     si_me.sin_family = AF_INET;
     si_me.sin_port = htons(PORT);
     si_me.sin_addr.s_addr = htonl(INADDR_ANY);
-     
-    //bind socket to port
-    if( bind(s , (struct sockaddr*)&si_me, sizeof(si_me) ) == -1)
-    {
-        die("bind");
-    }
 
-    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());	
+    //bind socket to port
+    if( ::bind(s , (struct sockaddr*)&si_me, sizeof(si_me) ) == -1)
+    {
+        std::cout << "It's not creating the socket" << std::endl;
+        die("bind");
+    }*/
+
+    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
 
     if(alignOmniWithCamera.getValue())
     {
@@ -267,13 +268,13 @@ void SerialDriver::init(){
     getContext()->get<MechanicalObjectType>(&objectsMechTemp, core::objectmodel::BaseContext::SearchDown);
 
     int numberM = objectsMechTemp.size();
-    
+
     //std::cout << "Number of MechanicalObjects: " << objectsMechTemp[0]->name.getValue() << std::endl;
 
     getContext()->get<MechanicalObjectType2>(&collisionRigid, core::objectmodel::BaseContext::SearchDown);
 
     int numberM2 = objectsMechTemp.size();
-    
+
     //std::cout << "Number of ColissModel: " << collisionRigid[0]->name.getValue() << std::endl;
 
     if(numberM>0){
@@ -282,7 +283,7 @@ void SerialDriver::init(){
         getContext()->get<sofa::component::visualmodel::OglModel>(&list_oglModels, core::objectmodel::BaseContext::SearchDown);
 
         int number = list_oglModels.size();
-        
+
         //std::cout << "Number of visual models: " << number << std::endl;
 
         if(number>0){
@@ -302,7 +303,7 @@ void SerialDriver::init(){
             visualNode[0].mapping->f_mapForces.setValue(false);
             visualNode[0].mapping->index.setValue(1);
             visualNode[0].mapping->init();
-            
+
             visualNode[0].node->updateContext();
 
             sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[0].mapping->points.beginEdit());
@@ -321,14 +322,14 @@ void SerialDriver::init(){
             visualNode[0].mappingColis->f_mapConstraints.setValue(true);
             visualNode[0].mappingColis->f_mapForces.setValue(true);
             visualNode[0].mappingColis->init();
-   
+
             visualNode[0].nodeColis->updateContext();
 
             initVisu=true;
             visuActif=false;
         }else{
             std::cout << "No hay nodos visuales";
-        }    
+        }
     }else{
         std::cout << "The scene don't have MechanicalObjects" << std::endl;
     }
@@ -346,7 +347,7 @@ void SerialDriver::init(){
         //perror("OPEN");
         //exit(0);
     //}
-    
+
 }
 
 void SerialDriver::cleanup()
@@ -400,21 +401,21 @@ void SerialDriver::draw(const core::visual::VisualParams* vparam)
 
 void SerialDriver::draw()
 {
-    HDdouble transform[16];
+    //HDdouble transform[16];
     // get Position and Rotation from transform => put in servoDeviceData
     Mat3x3d mrot;
     Quat rot;
 
     if(initVisu)
-    {   
-        fflush(stdout);
-         
+    {
+        /*fflush(stdout);
+
         //try to receive some data, this is a blocking call
         if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == -1)
         {
             die("recvfrom()");
-        }
-        
+        }*/
+
         char * pch;
         //printf ("Splitting string \"%s\" into tokens:\n",buf);
         pch = strtok (buf," ,");
@@ -424,28 +425,49 @@ void SerialDriver::draw()
         while (pch != NULL && i<16)
         {
             ftemp[i] = atof(pch);
-            std::cout << ftemp[i] << std::endl;
+            //std::cout << ftemp[i] << std::endl;
             //printf ("%s\n",pch);
             pch = strtok (NULL, " ,");
             i++;
         }
-      
+
         //print details of the client/peer and the data received
         //printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
         //printf("Data: %s\n" , buf);
-        
+
         for (int u=0; u<3; u++)
                 for (int j=0; j<3; j++)
                     mrot[u][j] = ftemp[j*4+u];
 
         rot.fromMatrix(mrot);
         rot.normalize();
-        
-        VecCoord& posDOF =*(objectsMechTemp[0]->x.beginEdit());
+
+        VecCoord& posDOF = *(objectsMechTemp[0]->x.beginEdit());
+        posDOF.resize(NVISUALNODE);
+        //posStore[0] = posStore[0] + 0.01;
+        posStore[0] = posStore[0] + 0.01;
+        posStore[1] = posStore[1] + 0.01;
+        posStore[2] = posStore[2] + 0.01;
+
+            for(int i=0;i<10;i++){
+              Vec3d pos;
+              //pos[0] = posDOF[i].getCenter()[0] + 0.01;
+              //pos[0] = pos[0];
+              //pos[1] = posDOF[i].getCenter()[1] + 0.01;
+              //pos[1] = pos[1];
+              //pos[2] = pos[2];
+              pos = posStore;
+              std::cout << i << " " << posDOF[i].getCenter()[0] << " " << posDOF[i].getCenter()[1] << " " << posDOF[i].getCenter()[2] << std::endl;
+
+              posDOF[i].getCenter() = pos;
+
+              std::cout << i << " " << posDOF[i].getCenter()[0] << " " << posDOF[i].getCenter()[1] << " " << posDOF[i].getCenter()[2] << std::endl;
+            }
+
             //posDOF.resize(NVISUALNODE+1);
-            posDOF[1].getCenter()[0] =  posDOFEST_X + ftemp[12]*0.01;
+            /*posDOF[1].getCenter()[0] =  posDOFEST_X + ftemp[12]*0.01;
             posDOF[1].getCenter()[1] =  posDOFEST_Y + ftemp[13]*0.01;
-            posDOF[1].getCenter()[2] =  posDOFEST_Z + ftemp[14]*0.01;
+            posDOF[1].getCenter()[2] =  posDOFEST_Z + ftemp[14]*0.01;*/
             posDOF[1].getCenter() =  posDOF[1].getCenter() - positionBase.getValue();
             //std::cout << "Orientation: " << posDOF[1].getOrientation()[1] << std::endl;
             posDOF[1].getOrientation() =  rot;
@@ -454,12 +476,14 @@ void SerialDriver::draw()
             //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
         objectsMechTemp[0]->x.endEdit();
 
+        //objectsMechTemp[0]->init();
+
         //now reply the client with the same data
-        if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == -1)
+        /*if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == -1)
         {
             die("sendto()");
             std::cout << "Error" << std::endl;
-        }
+        }*/
         //close(s);
     }
 }
