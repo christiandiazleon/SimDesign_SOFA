@@ -91,7 +91,6 @@ bool msgPointsGroupV3::SetupReceive()
         if (PointsC.size() == 20 )
         {
             std::cout << i << ". # máximo de puntos alcanzado." << std::endl;
-
         }
         */
        cont++;
