@@ -21,7 +21,7 @@
         <MechanicalObject name="dofs" src="@meshLoader" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass  name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceFieldCNVSS template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+        <TetrahedralCorotationalFEMForceFieldCNVSS template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" IsServer="True" IsLocal ="False" IsCFEM="True" />
         <FixedConstraint  name="FixedConstraint" indices="25 102 103 104 11 111" />
 
         <Node name="VisualTheBest" tags="Visual">

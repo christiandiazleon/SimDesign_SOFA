@@ -29,6 +29,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/map.h>
+#include <vector>
 #include "PointNet.h"
 
 // corotational tetrahedron from
@@ -134,8 +135,11 @@ protected:
     /// container that stotes all requires information for each tetrahedron
     topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> > tetrahedronInfo;
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    /*--------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
     sofa::helper::vector<topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation>>> tetrahedronInfoMeshes;
+
+    /*------------------------------------------------------------------------*/
 
     /// @name Full system matrix assembly support
     /// @{
@@ -148,17 +152,21 @@ protected:
     CompressedMatrix _stiffnesses;
     /// @}
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    /*-----------CODE ADDED FOR DISTRIBUTED BEHAVIOR--------------------------*/
     sofa::helper::vector<CompressedMatrix> _stiffnessesMeshes;
+
+    /*------------------------------------------------------------------------*/
 
     SReal m_potentialEnergy;
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR--------------------------*/
+
     //sofa::component::topology::MultilevelTetrahedronSetTopologyContainer* _topology; //We need to add this topology
     //sofa::component::container::MechanicalObject<DataTypes>* mObject;
 
+    /*------------------------------------------------------------------------*/
 
 public:
     class TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
@@ -197,7 +205,7 @@ public:
     Data<defaulttype::Vec4f> drawColor4;
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    /*-------------CODE ADDED FOR DISTRIBUTED BEHAVIOR------------------------*/
     Data<int> IDBody;
     Data<bool> IsAttachable;
     Data<bool> IsCuttable;
@@ -206,6 +214,8 @@ public:
     Data<bool> IsCFEM;
     Data<bool> IsServer;
     Data<bool> IsLocal;
+
+    /*------------------------------------------------------------------------*/
 
 protected:
     TetrahedralCorotationalFEMForceFieldCNVSS();
@@ -222,10 +232,13 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    /*------------------CODE ADDED FOR DISTRIBUTED BEHAVIOR------------------*/
+
     void setVectorPoints(std::vector<PointNet> value){vecPoints = value;}
     std::vector<PointNet> getVectorPoints(){return vecPoints;}
     PointNet getPoint(int index){return vecPoints[index];}
+
+    /*-----------------------------------------------------------------------*/
 
     virtual void init();
     virtual void reinit();
@@ -249,11 +262,15 @@ public:
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
     void getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetrahedron& te);
 
+    void SetupPoints();
     void draw(const core::visual::VisualParams* vparams);
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    /*------------------CODE ADDED FOR DISTRIBUTED BEHAVIOR------------------*/
+
     std::vector<PointNet> vecPoints;
     std::vector< std::vector<PointNet>> vecPointsMeshes;
+
+    /*-----------------------------------------------------------------------*/
 
 protected:
 

@@ -92,6 +92,14 @@ TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::TetrahedralCorotationalFEM
     , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
     , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
     , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
+    , IDBody( initData(&IDBody, 0, "IDBody", "ID defining the body") )
+		, IsAttachable( initData(&IsAttachable, false, "IsAttachable", "Define if the body allows to be attached") )
+		, IsCuttable( initData(&IsCuttable, false, "IsCuttable", "Define if the body allow to be cut") )
+		, IsCarvinable( initData(&IsCarvinable, false, "IsCarvinable", "Define if the body allow to be carved") )
+		, IsClipAttachable( initData(&IsClipAttachable, false, "IsClipAttachable", "Define if the body allow to be clip attached") )
+		, IsCFEM( initData(&IsCFEM, false, "IsCFEM", "Determines what forcefield will be applied, whether mass tensor or CFEM") )
+		, IsServer( initData(&IsServer, true, "IsServer", "Define the role of the component whether it will play server or client role") )
+		, IsLocal( initData(&IsLocal, false, "IsLocal", "Define if the local or remote computation is activated for clients") )
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
     , drawColor1(initData(&drawColor1,defaulttype::Vec4f(0.0f,0.0f,1.0f,1.0f),"drawColor1"," draw color for faces 1"))
     , drawColor2(initData(&drawColor2,defaulttype::Vec4f(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
@@ -122,7 +130,8 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::init()
 
     this->core::behavior::ForceField<DataTypes>::init();
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-------------------------*/
+
     //_topology = this->getContext()->getMeshTopology(); Not used
   	//_topology = dynamic_cast<sofa::component::topology::MultilevelTetrahedronSetTopologyContainer*>(this->getContext()->getMeshTopology());
   	//mObject = dynamic_cast<sofa::component::container::MechanicalObject<DataTypes>*>(this->mstate);
@@ -130,12 +139,18 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::init()
     //tetrahedronInfoMeshes.resize(_topology->getNbOfMeshes());
   	//_stiffnessesMeshes.resize(_topology->getNbOfMeshes());
 
-    _topology = this->getContext()->getMeshTopology();
+    /*------------------------------------------------------------------------*/
 
-    ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+    _topology = this->getContext()->getMeshTopology();
+    //mObject = dynamic_cast<sofa::component::container::MechanicalObject<DataTypes>*>(this->mstate);
+
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-------------------------*/
+
     //edgeInfoMeshes.resize(_topology->getNbOfMeshes());
   	//_initialPointsMeshes.resize(_topology->getNbOfMeshes());
   	//vecPointsMeshes.resize(_topology->getNbOfMeshes());
+
+    /*------------------------------------------------------------------------*/
 
     if (_topology->getNbTetrahedra()==0)
     {
@@ -145,7 +160,8 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::init()
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
-      ///CODE ADDED FOR DISTRIBUTED BEHAVIOR
+      /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
       /*int oldIndex = _topology->getIndexCurrentMesh();
     	int oldIndex2 = mObject->indexCurrentMesh.getValue();
 
@@ -194,6 +210,9 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::init()
 
       _topology->setIndexCurrentMesh(oldIndex);
       mObject->indexCurrentMesh.setValue(oldIndex2);*/
+
+      /*------------------------------------------------------------------------*/
+
 }
 
 
@@ -206,6 +225,38 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::reinit()
     else if (f_method.getValue() == "polar")
         this->setMethod(POLAR);
     else this->setMethod(LARGE);
+
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
+    /*int oldIndex = _topology->getIndexCurrentMesh();
+    int oldIndex2 = mObject->indexCurrentMesh.getValue();
+
+    for(unsigned int i=0; i<_topology->getNbOfMeshes();i++)
+	{
+		_topology->setIndexCurrentMesh(i);
+		mObject->indexCurrentMesh.setValue(i);
+
+		helper::vector<typename MultilevelTetrahedralHybridForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfoMeshes[i].beginEdit());
+
+		tetrahedronInf.resize(_topology->getNbTetrahedra());
+
+		for (int j=0;j<_topology->getNbTetrahedra();++j) {
+			CFTetrahedronCreationFunction(j, (void*) this, tetrahedronInf[j],
+				_topology->getTetrahedron(j),  (const std::vector< unsigned int > )0,
+				(const std::vector< double >)0);
+		}
+
+		tetrahedronInfoMeshes[i].setCreateFunction(CFTetrahedronCreationFunction);
+		tetrahedronInfoMeshes[i].setCreateParameter( (void *) this );
+		tetrahedronInfoMeshes[i].setDestroyParameter( (void *) this );
+
+		tetrahedronInfoMeshes[i].endEdit();
+	}
+
+	_topology->setIndexCurrentMesh(oldIndex);
+	mObject->indexCurrentMesh.setValue(oldIndex2);*/
+
+    /*------------------------------------------------------------------------*/
 
     // Need to initialize the _stiffnesses vector before using it
     size_t sizeMO=this->mstate->getSize();
@@ -235,94 +286,254 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::reinit()
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    VecDeriv& f = *d_f.beginEdit();
-    const VecCoord& p = d_x.getValue();
+  if(IsServer.getValue() == true)
+  {
+  	if(IsCFEM.getValue() == true)
+  	{
+      VecDeriv& f = *d_f.beginEdit();
+      const VecCoord& p = d_x.getValue();
 
-    switch(method)
-    {
-    case SMALL :
-    {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
-        {
-            accumulateForceSmall( f, p, i );
-        }
-        break;
+      switch(method)
+      {
+      case SMALL :
+      {
+          for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+          {
+              accumulateForceSmall( f, p, i );
+          }
+          break;
+      }
+      case LARGE :
+      {
+          for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+          {
+              accumulateForceLarge( f, p, i );
+          }
+          break;
+      }
+      case POLAR :
+      {
+          for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+          {
+              accumulateForcePolar( f, p, i );
+          }
+          break;
+      }
+      }
+      d_f.endEdit();
     }
-    case LARGE :
+    else
     {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
-        {
-            accumulateForceLarge( f, p, i );
-        }
-        break;
+
+      /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
+      /*VecDeriv& f = *d_f.beginEdit();
+  		const VecCoord& x = d_x.getValue();
+
+  		unsigned int v0,v1;
+  		int nbEdges=_topology->getNbEdges();
+
+  		EdgeRestInformation *einfo;
+
+  		helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfoMeshes[_topology->getIndexCurrentMesh()].beginEdit());
+
+  		Deriv force;
+  		Coord dp0,dp1,dp;
+
+  		for(int i=0; i<nbEdges; i++ )
+  		{
+  			einfo=&edgeInf[i];
+  			v0=_topology->getEdge(i)[0];
+  			v1=_topology->getEdge(i)[1];
+  			dp0=x[v0]-_initialPointsMeshes[_topology->getIndexCurrentMesh()][v0];
+  			dp1=x[v1]-_initialPointsMeshes[_topology->getIndexCurrentMesh()][v1];
+  			dp = dp1-dp0;
+
+  			f[v1]+=einfo->DfDx*dp;
+  			f[v0]-=einfo->DfDx.transposeMultiply(dp);
+  		}
+
+  		edgeInfoMeshes[_topology->getIndexCurrentMesh()].endEdit();
+  		d_f.endEdit();*/
+
+      /*----------------------------------------------------------------------*/
+      }
     }
-    case POLAR :
-    {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
-        {
-            accumulateForcePolar( f, p, i );
-        }
-        break;
-    }
-    }
-    d_f.endEdit();
 }
 
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    VecDeriv& df = *d_df.beginEdit();
-    const VecDeriv& dx = d_dx.getValue();
+  if(IsServer.getValue() == true)
+	{
+		if(IsCFEM.getValue() == true)
+		{
+      VecDeriv& df = *d_df.beginEdit();
+      const VecDeriv& dx = d_dx.getValue();
 
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+      Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    switch(method)
+      switch(method)
+      {
+      case SMALL :
+      {
+          for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+          {
+              const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
+              Index a = t[0];
+              Index b = t[1];
+              Index c = t[2];
+              Index d = t[3];
+
+              applyStiffnessSmall( df, dx, i, a,b,c,d, kFactor );
+          }
+          break;
+      }
+      case LARGE :
+      {
+          for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+          {
+              const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
+              Index a = t[0];
+              Index b = t[1];
+              Index c = t[2];
+              Index d = t[3];
+
+              applyStiffnessLarge( df, dx, i, a,b,c,d, kFactor );
+          }
+          break;
+      }
+      case POLAR :
+      {
+          for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
+          {
+              const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
+              Index a = t[0];
+              Index b = t[1];
+              Index c = t[2];
+              Index d = t[3];
+
+              applyStiffnessPolar( df, dx, i, a,b,c,d, kFactor );
+          }
+          break;
+      }
+      }
+
+      d_df.endEdit();
+    }
+    else
     {
-    case SMALL :
-    {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
-        {
-            const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
-            Index a = t[0];
-            Index b = t[1];
-            Index c = t[2];
-            Index d = t[3];
+      /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
 
-            applyStiffnessSmall( df, dx, i, a,b,c,d, kFactor );
+      /*VecDeriv& df = *d_df.beginEdit();
+			const VecDeriv& dx = d_dx.getValue();
+			double kFactor = mparams->kFactor();
+
+			unsigned int v0,v1;
+			int nbEdges=_topology->getNbEdges();
+
+			EdgeRestInformation *einfo;
+
+			helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfoMeshes[_topology->getIndexCurrentMesh()].beginEdit());
+
+			Deriv force;
+			Coord dp0,dp1,dp;
+
+			for(int i=0; i<nbEdges; i++ )
+			{
+				einfo=&edgeInf[i];
+				v0=_topology->getEdge(i)[0];
+				v1=_topology->getEdge(i)[1];
+				dp0=dx[v0];
+				dp1=dx[v1];
+				dp = dp1-dp0;
+
+				df[v1]+= (einfo->DfDx*dp) * kFactor;
+				df[v0]-= (einfo->DfDx.transposeMultiply(dp)) * kFactor;
+			}
+			edgeInfoMeshes[_topology->getIndexCurrentMesh()].endEdit();
+
+			d_df.endEdit();*/
+
+      /*----------------------------------------------------------------------*/
+    }
+  }
+}
+
+template<class DataTypes>
+void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::SetupPoints()
+{
+	if(IsServer.getValue() == true)
+	{
+		if(IsLocal.getValue() == false)
+		{
+			Data<typename DataTypes::VecCoord>& x_d = *this->mstate->write(core::VecCoordId::position());
+
+			typename DataTypes::VecCoord &x = *x_d.beginEdit();
+
+			vecPoints.resize(x.size());
+
+			/*std::cout << "SIZE TETRAHEDRAL CFEM FORCE FIELD: " << x.size() << std::endl; */
+
+			Coord cTemp;
+
+			for(int i=0;i<x.size();i++)
+			{
+				cTemp = (Coord)x[i];
+
+				PointNet pntTemp(cTemp[0], cTemp[1], cTemp[2]);
+
+				vecPoints[i] = pntTemp;
+
+        if(i==0){
+          std::cout << pntTemp.getX() << " " << pntTemp.getY() << " " << pntTemp.getZ() << std::endl;
         }
-        break;
-    }
-    case LARGE :
-    {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
-        {
-            const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
-            Index a = t[0];
-            Index b = t[1];
-            Index c = t[2];
-            Index d = t[3];
+			}
 
-            applyStiffnessLarge( df, dx, i, a,b,c,d, kFactor );
-        }
-        break;
-    }
-    case POLAR :
-    {
-        for(int i = 0 ; i<_topology->getNbTetrahedra(); ++i)
-        {
-            const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(i);
-            Index a = t[0];
-            Index b = t[1];
-            Index c = t[2];
-            Index d = t[3];
+			x_d.endEdit();
+		}
+		else		//When the computation is performed at the client side
+		{
+			Data<typename DataTypes::VecCoord>& x_d = *this->mstate->write(core::VecCoordId::position());
 
-            applyStiffnessPolar( df, dx, i, a,b,c,d, kFactor );
-        }
-        break;
-    }
-    }
+			typename DataTypes::VecCoord &x = *x_d.beginEdit();
 
-    d_df.endEdit();
+			if(vecPoints.size() >= x.size())
+			{
+				Coord cTemp;
+				float valX, valY, valZ;
+
+				for(int i=0;i<x.size();i++)
+				{
+					cTemp = (Coord)x[i];
+
+					valX = (0.8*cTemp[0] + 0.2*vecPoints[i].getX());
+					valY = (0.8*cTemp[1] + 0.2*vecPoints[i].getY());
+					valZ = (0.8*cTemp[2] + 0.2*vecPoints[i].getZ());
+
+					DataTypes::set(x[i], valX, valY, valZ);
+				}
+			}
+			x_d.endEdit();
+
+			/*std::cout << "Passing for client position update NotCFEM" << std::endl;*/
+		}
+	}
+	else
+	{
+		Data<typename DataTypes::VecCoord>& x_d = *this->mstate->write(core::VecCoordId::position());
+
+		typename DataTypes::VecCoord &x = *x_d.beginEdit();
+
+		if(vecPoints.size() >= x.size())
+		{
+			for(int i=0;i<x.size();i++)
+			{
+				DataTypes::set(x[i], vecPoints[i].getX(), vecPoints[i].getY(), vecPoints[i].getZ());
+			}
+		}
+		x_d.endEdit();
+	}
 }
 
 template<class DataTypes>
@@ -437,6 +648,18 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::computeStiffnessMatri
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {
+
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
+    /*const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
+
+    helper::vector<typename MultilevelTetrahedralHybridForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfoMeshes[_topology->getIndexCurrentMesh()].beginEdit());
+
+    computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_topology->getNbTetrahedra()]));
+
+    tetrahedronInfoMeshes[_topology->getIndexCurrentMesh()].endEdit();*/
+
+    /*------------------------------------------------------------------------*/
 
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
 
@@ -1025,6 +1248,47 @@ inline void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::getElementStif
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c, Index&d)
 {
+
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
+    //std::cout << "[MultilevelTetrahedralHybridForceField]::initLarge()" << std::endl;
+
+    // Rotation matrix (initial Tetrahedre/world)
+    // first vector on first edge
+    // second vector in the plane of the two first edges
+    // third vector orthogonal to first and second
+    //const VecCoord *X0=this->mstate->getX0();
+    /*const VecCoord *X0=mObject->getX0();
+
+    Transformation R_0_1;
+    computeRotationLarge( R_0_1, (*X0), a, b, c);
+
+    helper::vector<typename MultilevelTetrahedralHybridForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfoMeshes[_topology->getIndexCurrentMesh()].beginEdit());
+
+    tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(*X0)[a];
+    tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(*X0)[b];
+    tetrahedronInf[i].rotatedInitialElements[2] = R_0_1*(*X0)[c];
+    tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(*X0)[d];
+
+    tetrahedronInf[i].initialTransformation = R_0_1;
+    //	serr<<"a,b,c : "<<a<<" "<<b<<" "<<c<<sendl;
+    //	serr<<"_initialPoints : "<<_initialPoints<<sendl;
+    //	serr<<"R_0_1 large : "<<R_0_1<<sendl;
+
+    tetrahedronInf[i].rotatedInitialElements[1] -= tetrahedronInf[i].rotatedInitialElements[0];
+    tetrahedronInf[i].rotatedInitialElements[2] -= tetrahedronInf[i].rotatedInitialElements[0];
+    tetrahedronInf[i].rotatedInitialElements[3] -= tetrahedronInf[i].rotatedInitialElements[0];
+    tetrahedronInf[i].rotatedInitialElements[0] = Coord(0,0,0);
+
+    //	serr<<"_rotatedInitialElements : "<<_rotatedInitialElements<<sendl;
+
+    computeStrainDisplacement( tetrahedronInf[i].strainDisplacementTransposedMatrix,tetrahedronInf[i].rotatedInitialElements[0], tetrahedronInf[i].rotatedInitialElements[1],tetrahedronInf[i].rotatedInitialElements[2],tetrahedronInf[i].rotatedInitialElements[3] );
+
+    tetrahedronInfoMeshes[_topology->getIndexCurrentMesh()].endEdit();*/
+
+    /*---------------------------------------------------------------------*/
+
+
     // Rotation matrix (initial Tetrahedre/world)
     // first vector on first edge
     // second vector in the plane of the two first edges
@@ -1062,6 +1326,12 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::accumulateForceLarge( Vector& f, const Vector & p, Index elementIndex )
 {
     const core::topology::BaseMeshTopology::Tetrahedron t=_topology->getTetrahedron(elementIndex);
+
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
+    /*helper::vector<typename MultilevelTetrahedralHybridForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfoMeshes[_topology->getIndexCurrentMesh()].beginEdit());*/
+
+    /*----------------------------------------------------------------------*/
 
     helper::vector<typename TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
@@ -1188,11 +1458,23 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::accumulateForceLarge(
     }
 
     tetrahedronInfo.endEdit();
+
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
+    /*tetrahedronInfoMeshes[_topology->getIndexCurrentMesh()].endEdit();*/
+
+    /*----------------------------------------------------------------------*/
 }
 
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, SReal fact)
 {
+    /*------------CODE ADDED FOR DISTRIBUTED BEHAVIOR-----------------------*/
+
+    /*const helper::vector<typename MultilevelTetrahedralHybridForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfoMeshes[_topology->getIndexCurrentMesh()].getValue();*/
+
+    /*----------------------------------------------------------------------*/
+
     const helper::vector<typename TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     Transformation R_0_2;
@@ -1379,6 +1661,8 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::applyStiffnessPolar( 
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    SetupPoints();
+
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
