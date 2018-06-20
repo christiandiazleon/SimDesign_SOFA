@@ -118,7 +118,7 @@ void SerialDriver::setForceFeedback(ForceFeedback *ff)
 void SerialDriver::init()
 {
     // std::cout << "Enter to init method - SerialDriver.cpp" << std::endl;
-    
+
     n1 = 0.0f;
 
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
@@ -183,8 +183,8 @@ void SerialDriver::init()
     std::cout << "Mi nombre es " << listMechanicalObj.size() << std::endl;
     int numberM = listMechanicalObj.size();*/
 
-    /** 
-     * We get a 
+    /**
+     * We get a
     */
     getContext()->get<MechanicalObjectType>(&objectsMechTemp, core::objectmodel::BaseContext::SearchDown);
 
@@ -265,6 +265,7 @@ void SerialDriver::init()
 
     //-- Open the serial port
     //-- The speed is configure at 9600 baud
+#if defined(__linux__)
     serial_fd = serial_open(path, B9600);
     int flush = tcflush(serial_fd, TCIOFLUSH);
     //std::thread first (&SerialDriver::serial_read, this, serial_fd, data, CMD_LEN, TIMEOUT);
@@ -275,6 +276,7 @@ void SerialDriver::init()
         perror("OPEN");
         exit(0);
     }
+#endif
 }
 
 void SerialDriver::cleanup()
@@ -338,12 +340,12 @@ float stof(const char* s){
     }
     for (int point_seen = 0; *s; s++){
         if (*s == '.'){
-            point_seen = 1; 
+            point_seen = 1;
             continue;
         }
-    
+
     int d = *s - '0';
-    
+
     if (d >= 0 && d <= 9){
         if (point_seen) fact /= 10.0f;
             rez = rez * 10.0f + (float)d;
@@ -360,19 +362,20 @@ void SerialDriver::draw()
     if (initVisu)
     {
         //VecCoord& posD =(*posDevice.beginEdit());
+#if defined(__linux__)
         if (serial_fd != -1)
         {
             float n;
             int flush = tcflush(serial_fd, TCIOFLUSH);
             n = serial_read(serial_fd, data, CMD_LEN, TIMEOUT);
-            
+
             // este parametro data es de la escena, son como las coordenadas o posicion del instrumento
             // cambia cuando muevo la escena con el mouse en sofa
 
             // std::cout << "Data brought from serial_read method " << data << std::endl;
             flush = tcflush(serial_fd, TCIOFLUSH);
             //n = n*0.01f;
-            
+
 
             // n1 = atof(data) * 0.5f;
             n1 = stof(data) * 0.5f;
@@ -384,23 +387,14 @@ void SerialDriver::draw()
             VecCoord &posDOF = *(objectsMechTemp[0]->x.beginEdit());
                 posDOF.resize(NVISUALNODE + 1);
 
-                // en el draw se convierte ese data positon instrumen a  float 
+                // en el draw se convierte ese data positon instrumen a  float
                 positionInstrument = stof(data) * 0.5f;
                 //positionInstrument = sscanf(data, "%f", n1);
                 posDOF[1].getCenter()[2] = posDOFEST + n1;
                 //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
             objectsMechTemp[0]->x.endEdit();
         }
-        //std::cout << posDOF[1].getCenter()[2] << std::endl;
-        //for(int i=0;i<NVISUALNODE;i++)
-        //{+ 0.01f
-        //  if(omniVisu.getValue() || i>6)
-        //  {
-        //      visualNode[i].visu->drawVisual();
-        //      visualNode[i].mapping->draw();
-        //  }
-        //}
-        //rigidDOF->x.endEdit();
+#endif
     }
 
     // std::cout << "Serial Driver draw n1: " << n1 << " " << positionInstrument << std::endl;
@@ -449,6 +443,7 @@ int SerialDriver::serial_open(char *serial_name, speed_t baud)
     struct termios newtermios;
     int fd;
 
+#if defined(__linux__)
     // Open the serial port
     fd = open(serial_name, O_RDWR | O_NOCTTY);
 
@@ -484,6 +479,7 @@ int SerialDriver::serial_open(char *serial_name, speed_t baud)
     {
         return -1;
     }
+#endif
 
     //-- Return the file descriptor
     return fd;
@@ -512,6 +508,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
     //-- Wait for the data. A block of size bytes is expected to arrive
     //-- within the timeout_usec time. This block can be received as
     //-- smaller blocks.
+#if defined(__linux__)
     do
     {
         //-- Set the fds variable to wait for the serial descriptor
@@ -559,12 +556,13 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
         //-- Repeat the loop until a data block of size bytes is received or
         //-- a timeout occurs
     } while (count < size && ret == 1);
+#endif
 
     //-- Return the number of bytes reads. 0 If a timeout has occurred.
     // std::cout << "Leaving serial_read method " << std::endl;
     // std::cout << "count value " << count << std::endl;
     return count;
-    
+
 }
 
 void serial_close(int fd);

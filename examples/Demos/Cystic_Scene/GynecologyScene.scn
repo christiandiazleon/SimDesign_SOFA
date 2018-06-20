@@ -13,24 +13,24 @@
     <DirectionalLight name="light2" color="1 1 1" direction="1 1 0" />
     <DirectionalLight name="light2" color="1 1 1" direction="-1 -1 0" />
 
-    
+
     <!-- Added ZMQ Communication plugin -->
     <RequiredPlugin name="ZeroMQCommunication" pluginName="ZeroMQCommunication" />
-    <SerialDriver name="Serial Driver" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
-    <ZMQClientComponent name="ZMQCC" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> 
+    <!-- <SerialDriver name="Serial Driver" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" /> -->
+    <!-- <ZMQClientComponent name="ZMQCC" listening="1" tags="Omni" forceScale="0.5" scale="50"  positionBase="0 1 -0.5"  permanent="1" />  -->
     <!-- Review late above parameters ZMQClientComponent  -->
 
-    
 
 
 
-    
+
+
     <Node   name="Instrument"  principalGraph="true">
         <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"/>
         <UniformMass template="Rigid" name="mass"  totalmass="0.05" />
-        
+
         <Node   name="VisualModel" >
-            <OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="mesh/dental_instrument.obj" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />          
+            <OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="mesh/dental_instrument.obj" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
         </Node>
 
         <Node name="CollisionModel">
@@ -40,7 +40,7 @@
             <Triangle  selfCollision="0" />
             <Line name="Instrumentline"  />
             <Point name="Instrumentpoint" contactStiffness="0.1"/>
-            
+
             <!--<EnslavementForceFeedback name="forcefeedback" tags="Omni" collisionModel1="@ParticleModel" collisionModel2="" relativeStiffness="4" attractionDistance="0.3" normalsPointOut="false"/>-->
         </Node>
     </Node>
@@ -145,7 +145,7 @@
         </Node>
     </Node>
 
-    <!-- Changing a scene 
+    <!-- Changing a scene
     <Node name="Tube_Left">
         <MeshGmshLoader name="meshLoader" filename="mesh/Utero_V2/Tube_Left_Mesh_V2.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />

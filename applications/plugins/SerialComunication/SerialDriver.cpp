@@ -199,19 +199,19 @@ void SerialDriver::init(){
     std::cout << "Mi nombre es " << listMechanicalObj.size() << std::endl;
     int numberM = listMechanicalObj.size();*/
 
-    /** 
-     * We get a 
+    /**
+     * We get a
     */
     getContext()->get<MechanicalObjectType>(&objectsMechTemp, core::objectmodel::BaseContext::SearchDown);
 
     int numberM = objectsMechTemp.size();
-    
+
     //std::cout << "Number of MechanicalObjects: " << objectsMechTemp[0]->name.getValue() << std::endl;
 
     getContext()->get<MechanicalObjectType2>(&collisionRigid, core::objectmodel::BaseContext::SearchDown);
 
     int numberM2 = objectsMechTemp.size();
-    
+
     //std::cout << "Number of ColissModel: " << collisionRigid[0]->name.getValue() << std::endl;
 
     if(numberM>0){
@@ -220,7 +220,7 @@ void SerialDriver::init(){
         getContext()->get<sofa::component::visualmodel::OglModel>(&list_oglModels, core::objectmodel::BaseContext::SearchDown);
 
         int number = list_oglModels.size();
-        
+
         //std::cout << "Number of visual models: " << number << std::endl;
 
         if(number>0){
@@ -240,7 +240,7 @@ void SerialDriver::init(){
             visualNode[0].mapping->f_mapForces.setValue(false);
             visualNode[0].mapping->index.setValue(1);
             visualNode[0].mapping->init();
-            
+
             visualNode[0].node->updateContext();
 
             sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[0].mapping->points.beginEdit());
@@ -259,14 +259,14 @@ void SerialDriver::init(){
             visualNode[0].mappingColis->f_mapConstraints.setValue(true);
             visualNode[0].mappingColis->f_mapForces.setValue(true);
             visualNode[0].mappingColis->init();
-   
+
             visualNode[0].nodeColis->updateContext();
 
             initVisu=true;
             visuActif=false;
         }else{
             std::cout << "No hay nodos visuales";
-        }    
+        }
     }else{
         std::cout << "The scene don't have MechanicalObjects" << std::endl;
     }
@@ -275,16 +275,15 @@ void SerialDriver::init(){
 
     //-- Open the serial port
     //-- The speed is configure at 9600 baud
-    serial_fd=serial_open(path,B9600);
+    /*serial_fd=serial_open(path,B9600);
     int flush = tcflush(serial_fd,TCIOFLUSH);
-    //std::thread first (&SerialDriver::serial_read, this, serial_fd, data, CMD_LEN, TIMEOUT);
 
     if (serial_fd==-1) {
         printf ("Error opening the serial device: %s\n","/dev/usbnoseque");
         perror("OPEN");
         exit(0);
-    }
-    
+    }*/
+
 }
 
 void SerialDriver::cleanup()
@@ -342,13 +341,12 @@ void SerialDriver::draw()
     {
         //VecCoord& posD =(*posDevice.beginEdit());
         if (serial_fd!=-1){
-            float n1;
+            /*float n1;
             float n;
             int flush = tcflush(serial_fd,TCIOFLUSH);
             n = serial_read(serial_fd,data,CMD_LEN,TIMEOUT);
-            std::cout << data << std::endl; 
+            std::cout << data << std::endl;
             flush = tcflush(serial_fd,TCIOFLUSH);
-            //n = n*0.01f;
 
             n1 =  atof(data)*0.5;
 
@@ -356,7 +354,7 @@ void SerialDriver::draw()
                 posDOF.resize(NVISUALNODE+1);
                 posDOF[1].getCenter()[2] =  posDOFEST + n1;
                 //std::cout << "PosRigid: " <<posDOF[1].getCenter()[2] << std::endl;
-            objectsMechTemp[0]->x.endEdit();
+            objectsMechTemp[0]->x.endEdit();*/
 
         }
         //std::cout << posDOF[1].getCenter()[2] << std::endl;
@@ -370,7 +368,7 @@ void SerialDriver::draw()
         //}
         //rigidDOF->x.endEdit();
     }
-    //std::cout<<"SerialDriver::draw() is called" <<std::endl;  
+    //std::cout<<"SerialDriver::draw() is called" <<std::endl;
 }
 
 void SerialDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre){
@@ -413,9 +411,9 @@ int  SerialDriver::serial_open(char *serial_name, speed_t baud){
     int fd;
 
   // Open the serial port
-    fd = open(serial_name,O_RDWR | O_NOCTTY); 
+    /*fd = open(serial_name,O_RDWR | O_NOCTTY);
 
-    // Configure the serial port attributes: 
+    // Configure the serial port attributes:
     //   -- No parity
     //   -- 8 data bits
     //   -- other things...
@@ -429,7 +427,7 @@ int  SerialDriver::serial_open(char *serial_name, speed_t baud){
     // Set the speed
     cfsetospeed(&newtermios,baud);
     cfsetispeed(&newtermios,baud);
-  
+
     // flush the input buffer
     if (tcflush(fd,TCIFLUSH)==-1) {
         return -1;
@@ -443,7 +441,7 @@ int  SerialDriver::serial_open(char *serial_name, speed_t baud){
     //-- Configure the serial port now!!
     if (tcsetattr(fd,TCSANOW,&newtermios)==-1) {
         return -1;
-    }  
+    }*/
 
     //-- Return the file descriptor
     return fd;
@@ -465,15 +463,15 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
     int n;
 
     //-- Wait for the data. A block of size bytes is expected to arrive
-    //-- within the timeout_usec time. This block can be received as 
+    //-- within the timeout_usec time. This block can be received as
     //-- smaller blocks.
-    do {
+    /*do {
         //-- Set the fds variable to wait for the serial descriptor
         FD_ZERO(&fds);
         FD_SET (serial_fd, &fds);
 
         //-- Set the timeout in usec.
-        timeout.tv_sec = 0;  
+        timeout.tv_sec = 0;
         timeout.tv_usec = timeout_usec;
 
         //-- Wait for the data
@@ -482,7 +480,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
         if (ret==1){
             //-- Read the data (n bytes)
             n=read (serial_fd, &data[count], 1);
-            
+
             if(band){
                 if(data[count] != ' '){
                     if(data[count] == '\n'){
@@ -502,7 +500,7 @@ int SerialDriver::serial_read(int serial_fd, char *data, int size, int timeout_u
 
         //-- Repeat the loop until a data block of size bytes is received or
         //-- a timeout occurs
-    } while (count<size && ret==1);
+    } while (count<size && ret==1);*/
 
     //-- Return the number of bytes reads. 0 If a timeout has occurred.
     return count;
