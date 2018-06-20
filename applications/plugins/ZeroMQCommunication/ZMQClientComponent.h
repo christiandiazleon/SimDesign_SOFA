@@ -1,7 +1,7 @@
 #include <sofa/core/behavior/BaseController.h>
 #include <zmq.hpp>
 #include <sys/time.h>
-#include "SurgicalProtocol.h"
+// #include "SurgicalProtocol.h"
 
 // #include <sofa/core/objectmodel/Data.h>
 // using sofa::core::objectmodel::Data;
@@ -17,7 +17,11 @@ using sofa::defaulttype::Quat;
 #include "SerialDriver.h"
 /// #include <SofaBaseMechanics/MechanicalObject.h>
 
+#include "TetrahedralCorotationalFEMForceFieldCNVSS.h"
+using namespace sofa::component::forcefield;
+
 using std::string;
+
 
 namespace sofa
 {
@@ -92,14 +96,18 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
      * to reference it on ZMQClientComponent.cpp to save inside the SerilDriver objects
       */
     //typedef sofa::component::controller::SerialDriver g;
+    
     typedef SerialDriver SerialDriverType;
+    typedef TetrahedralCorotationalFEMForceFieldCNVSS t;
     // typedef sofa::component::controller::SerialDriver d;
     std::vector<SerialDriverType *> objectsSerialDriver;
+    //TetrahedralCorotationalFEMForceFieldCNVSS *t = new TetrahedralCorotationalFEMForceFieldCNVSS();
 
   private:
     struct timeval t_before, t_after;
     string replyMessage;
     SerialDriver *s = new SerialDriver();
+    // TetrahedralCorotationalFEMForceFieldCNVSS *t = new TetrahedralCorotationalFEMForceFieldCNVSS();
     string hapkitValue;
     char *buffer; // BUFFER en donde vamos a concatenar todo lo que se envia de posicion del hapkit
 };

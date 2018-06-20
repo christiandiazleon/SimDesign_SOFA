@@ -350,32 +350,37 @@ void ZMQClientComponent::init()
     /* We get the rootContext */
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
     cout << "rootContext: " << rootContext << endl;
-
+ 
     //este era. Buscamos un objeto Serial Driver.
     getContext()->get<SerialDriverType>(&objectsSerialDriver, core::objectmodel::BaseContext::SearchRoot);
 
     //rootContext->getTreeObjects<SerialDriverType>(&objectsSerialDriver);
+    if(objectsSerialDriver.size() == 0) {
+        std::cout << "Oe" << " \n\n"
+                << endl;
+    }
+    else
+    {
+    
+        std::cout << "Hola este es el tamaño de mi vector Serial Driver:" << objectsSerialDriver.size() << " \n\n"
+                << endl;
+        std::cout << "Este es el elemento 0 de mi vector Serial Driver: " << objectsSerialDriver[0]->name.getValue() << " \n\n"
+                << endl;
+        std::cout << "Este es la posicion del hapkit: " << objectsSerialDriver[0]->getPositionInstrument() << " \n\n"
+                << endl;
+        
+        //SerialDriver* s = new SerialDriver();
 
-    /*
-     std::cout << "Hola este es el tamaño de mi vector Serial Driver:" << objectsSerialDriver.size() << " \n\n"
-              << endl;
-    std::cout << "Este es el elemento 0 de mi vector Serial Driver: " << objectsSerialDriver[0]->name.getValue() << " \n\n"
-              << endl;
-    std::cout << "Este es la posicion del hapkit: " << objectsSerialDriver[0]->getPositionInstrument() << " \n\n"
-              << endl;
-    */
-    //SerialDriver* s = new SerialDriver();
+        std::cout << "ZeroMQCommunication::init()" << std::endl;
+        ZMQClientComponent z;
+        //msgPointsGroupV3 msg;
+    
 
-    std::cout << "ZeroMQCommunication::init()" << std::endl;
-    ZMQClientComponent z;
-    //msgPointsGroupV3 msg;
-   
-
-    // Connecting to Nerwork Manager
-    z.setupConnection();
-    msg.test();
-
-
+        // Connecting to Nerwork Manager
+        z.setupConnection();
+        msg.test();
+    
+    }
 
     // Creating instrument data object
     // instrumentData itemp;
@@ -409,6 +414,7 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
     hapkitDataSend();
     msg.SetupReceive();
     // bp.ProcessPtsToBeSent();
+
 
     //float a = s->askDevice();
     //float a = s->getTraslValue();

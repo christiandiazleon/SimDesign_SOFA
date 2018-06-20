@@ -485,7 +485,7 @@ void TetrahedralCorotationalFEMForceFieldCNVSS<DataTypes>::SetupPoints()
 				vecPoints[i] = pntTemp;
 
         if(i==0){
-          std::cout << pntTemp.getX() << " " << pntTemp.getY() << " " << pntTemp.getZ() << std::endl;
+          //std::cout << pntTemp.getX() << " " << pntTemp.getY() << " " << pntTemp.getZ() << std::endl;
         }
 			}
 

@@ -274,7 +274,7 @@ void SerialDriver::init()
     {
         printf("Error opening the serial device: %s\n", "/dev/usbnoseque");
         perror("OPEN");
-        exit(0);
+        //exit(0);
     }
 #endif
 }
