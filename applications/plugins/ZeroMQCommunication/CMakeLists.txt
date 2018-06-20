@@ -9,6 +9,8 @@ set(HEADER_FILES
     SerialDriver.h
     SurgicalProtocol.h
     SofaTypeMessages.h
+    TetrahedralCorotationalFEMForceFieldCNVSS.h
+    TetrahedralCorotationalFEMForceFieldCNVSS.inl
 )
 
 set(SOURCE_FILES
@@ -17,6 +19,7 @@ set(SOURCE_FILES
     SerialDriver.cpp
     SurgicalProtocol.cpp
     SofaTypeMessages.cpp
+    TetrahedralCorotationalFEMForceFieldCNVSS.cpp
 )
 
 set(EXTRA_FILES
@@ -36,7 +39,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ZER
 # Added
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SERIALPLUGIN")
 
-target_link_libraries(${PROJECT_NAME} -lzmq ${} SofaCore SofaComponentGeneral)
+target_link_libraries(${PROJECT_NAME} -lzmq ${} SofaCore SofaOpenglVisual SofaComponentGeneral SofaGeneralLoader)
 
 
 ## Install rules for the library; CMake package configurations files

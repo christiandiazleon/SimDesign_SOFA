@@ -67,9 +67,9 @@ bool msgPointsGroupV3::SetupReceive()
 
     /* Aca lo que debemos ahcer es convertirlo a string cada parte del mensaje
     para que ZMQ lo envie.**/
-    
-    
-    
+
+
+
     float data[80];
     // startPoint = (int)data[0];
 
