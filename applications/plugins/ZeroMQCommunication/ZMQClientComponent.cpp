@@ -102,6 +102,16 @@ void ZMQClientComponent::hapkitDataSend()
     cout << "Datos enviados" << endl;
 }
 
+void ZMQClientComponent::deformationPointsSend()
+{
+    string posVecPointsX, posVecPointsY, posVecPointsZ;
+    vecPoints = objectsTetrahedral[0]->getVectorPoints();
+        if(vecPoints.size() > 0)
+            std::cout << vecPoints[0].getX() << " " << vecPoints[0].getY() << " " << vecPoints[0].getZ() << std::endl;
+            posVecPointsX = to_string(vecPoints[0].getX());
+            posVecPointsY = to_string(vecPoints[0].getY());
+}
+
 
 void ZMQClientComponent::instrumentDataSend(instrumentData a)
 {
@@ -426,9 +436,12 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
     
 
     if(objectsTetrahedral.size() > 0){
+        deformationPointsSend();
+        /*
         vecPoints = objectsTetrahedral[0]->getVectorPoints();
         if(vecPoints.size() > 0)
             std::cout << vecPoints[0].getX() << " " << vecPoints[0].getY() << " " << vecPoints[0].getZ() << std::endl;
+        */
     }
 
     //commented

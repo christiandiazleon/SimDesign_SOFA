@@ -75,6 +75,7 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     /* Send some data to ZMQ external Server  */
     void instrumentDataSend(instrumentData a);
     void hapkitDataSend();
+    void deformationPointsSend();
     void attachingDataToSend(attachingData b);
 
 
