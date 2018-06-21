@@ -11,6 +11,7 @@
 #include <random>
 #include "ZMQClientComponent.h"
 //#include "SofaTypeMessages.h"
+
 using namespace std;
 
 namespace sofa
@@ -88,6 +89,8 @@ void ZMQClientComponent::hapkitDataSend()
     
     // A traves del objeto SerialDriver, accedemos a la posicion del instrumento con getPositionInstrument
     // el cual me retorna la posicion del instrumento. La almaceno en a
+
+
     float a = objectsSerialDriver[0]->getPositionInstrument();
 
     std::cout << "datos del hapkit " << a << std::endl;
@@ -358,6 +361,11 @@ void ZMQClientComponent::init()
     if(objectsSerialDriver.size() == 0) {
         std::cout << "Oe" << " \n\n"
                 << endl;
+        
+        getContext()->get<Tetrahedral>(&objectsTetrahedral, core::objectmodel::BaseContext::SearchRoot);
+        std::cout << " El tamaño de mi vector Tetrahedral:" << objectsTetrahedral.size() << " \n\n"
+               << endl;
+
     }
     else
     {
@@ -401,6 +409,8 @@ void ZMQClientComponent::init()
         // z.draw();
     }
     */
+
+    std::cout << "OUT INIT" << endl;
 }
 
 /*ZMQClientComponent::~ZMQClientComponent()
@@ -411,8 +421,18 @@ void ZMQClientComponent::draw(const core::visual::VisualParams *vparam)
 {
     // std::cout << "Draw del ZMQ parameters" << std::endl;
 
-    hapkitDataSend();
-    msg.SetupReceive();
+    if(objectsSerialDriver.size() > 0)
+        hapkitDataSend();
+    
+
+    if(objectsTetrahedral.size() > 0){
+        vecPoints = objectsTetrahedral[0]->getVectorPoints();
+        if(vecPoints.size() > 0)
+            std::cout << vecPoints[0].getX() << " " << vecPoints[0].getY() << " " << vecPoints[0].getZ() << std::endl;
+    }
+
+    //commented
+    // msg.SetupReceive();
     // bp.ProcessPtsToBeSent();
 
 

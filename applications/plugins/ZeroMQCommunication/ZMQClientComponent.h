@@ -98,15 +98,16 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     //typedef sofa::component::controller::SerialDriver g;
     
     typedef SerialDriver SerialDriverType;
-    typedef TetrahedralCorotationalFEMForceFieldCNVSS t;
+    typedef TetrahedralCorotationalFEMForceFieldCNVSS<Vec3dTypes> Tetrahedral;
     // typedef sofa::component::controller::SerialDriver d;
     std::vector<SerialDriverType *> objectsSerialDriver;
-    //TetrahedralCorotationalFEMForceFieldCNVSS *t = new TetrahedralCorotationalFEMForceFieldCNVSS();
+    std::vector<Tetrahedral *> objectsTetrahedral;
 
   private:
+    std::vector<PointNet> vecPoints;
     struct timeval t_before, t_after;
     string replyMessage;
-    SerialDriver *s = new SerialDriver();
+    //SerialDriver *s = new SerialDriver();
     // TetrahedralCorotationalFEMForceFieldCNVSS *t = new TetrahedralCorotationalFEMForceFieldCNVSS();
     string hapkitValue;
     char *buffer; // BUFFER en donde vamos a concatenar todo lo que se envia de posicion del hapkit
