@@ -1,4 +1,5 @@
 #include <sofa/core/behavior/BaseController.h>
+
 using namespace std;
 
 namespace sofa
@@ -47,6 +48,7 @@ public:
   int getIDTypeMessage() { return idTypeMessage; }
 };
 
+/*
 class msgInstrumentPosition : public Message
 {
   private:
@@ -57,15 +59,15 @@ class msgInstrumentPosition : public Message
     bool SetupSend();
     bool SetupReceive();
 };
+*/
 
-
-class msgPointsGroupV3
+class msgPointsGroup
 {
   private:
     int IDBody;
     int IDTypeMsgDef; // 1 Start message - 2 Middle messages - 3 End message
     int NroPointsC;
-    vector<PointNet> PointsC; // Vector que contiene todos los puntos de deformación del organo a ser enviados
+    std::vector<PointNet> PointsC; // Vector que contiene todos los puntos de deformación del organo a ser enviados
     
     vector<int> vNroPointC; 
     /* Vector que contiene el ID de cada punto de deformación del organo en la escena que sera enviado
@@ -77,8 +79,13 @@ class msgPointsGroupV3
     int NbPointsMsg; // Número de puntos que se envían por mensaje
   
   public:
-    msgPointsGroupV3();
+    msgPointsGroup();
+
     void test();
+    
+    void setPointsC(std::vector<PointNet> value){PointsC = value;}
+
+    bool SetupSend();
     bool SetupReceive();
     void setNroTotalPoints(int value) { NroTotalPoints = value; }
     void setIDTypeMsgDef(int value) { IDTypeMsgDef = value; }

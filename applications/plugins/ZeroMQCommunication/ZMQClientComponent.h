@@ -20,7 +20,7 @@ using sofa::defaulttype::Quat;
 #include "TetrahedralCorotationalFEMForceFieldCNVSS.h"
 using namespace sofa::component::forcefield;
 
-using std::string;
+using namespace std;
 
 
 namespace sofa
@@ -54,6 +54,7 @@ struct attachingData
   bool blnDeAtacchContact;
   float fDist;
 };
+
 
 class ZMQClientComponent : public sofa::core::behavior::BaseController
 {
@@ -95,12 +96,10 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
 
     /** We declare an alias to SerialDriver attribute, which should be a vector
      * to reference it on ZMQClientComponent.cpp to save inside the SerilDriver objects
-      */
-    //typedef sofa::component::controller::SerialDriver g;
-    
+    */
     typedef SerialDriver SerialDriverType;
     typedef TetrahedralCorotationalFEMForceFieldCNVSS<Vec3dTypes> Tetrahedral;
-    // typedef sofa::component::controller::SerialDriver d;
+    
     std::vector<SerialDriverType *> objectsSerialDriver;
     std::vector<Tetrahedral *> objectsTetrahedral;
 
@@ -108,13 +107,11 @@ class ZMQClientComponent : public sofa::core::behavior::BaseController
     std::vector<PointNet> vecPoints;
     struct timeval t_before, t_after;
     string replyMessage;
-    //SerialDriver *s = new SerialDriver();
-    // TetrahedralCorotationalFEMForceFieldCNVSS *t = new TetrahedralCorotationalFEMForceFieldCNVSS();
     string hapkitValue;
     char *buffer; // BUFFER en donde vamos a concatenar todo lo que se envia de posicion del hapkit
 };
 
-
+/*
 class  BodyPointsToBeSent
 {
   private:
@@ -125,7 +122,7 @@ class  BodyPointsToBeSent
     BodyPointsToBeSent();
     void ProcessPtsToBeSent();
 };
-
+*/
 
 }
 

@@ -39,8 +39,8 @@ zmq::socket_t subscriber(context, ZMQ_SUB);
  **/
 zmq::socket_t sender(context, ZMQ_PUSH);
 
-msgPointsGroupV3 msg;
-BodyPointsToBeSent bp;
+msgPointsGroup msg;
+// BodyPointsToBeSent bp;
 
 ZMQClientComponent::ZMQClientComponent()
 // : myparam(initData(&myparam, 0.42, "myparam", "ZeroMq version plugin. "))
@@ -104,16 +104,18 @@ void ZMQClientComponent::hapkitDataSend()
 
 void ZMQClientComponent::deformationPointsSend()
 {
+    
     string posVecPointsX, posVecPointsY, posVecPointsZ, allposVecPoints;
     vecPoints = objectsTetrahedral[0]->getVectorPoints();
-    std::cout << "entrando a deformations: " << endl;
+    msg.setPointsC(vecPoints);
+
         if(vecPoints.size() > 0){
             std::cout << vecPoints[0].getX() << " " << vecPoints[0].getY() << " " << vecPoints[0].getZ() << std::endl;
             posVecPointsX = to_string(vecPoints[0].getX());
             posVecPointsY = to_string(vecPoints[0].getY());
             posVecPointsZ = to_string(vecPoints[0].getZ());
             /* Concatenating all posVector elements */
-            allposVecPoints = " -> posVector3D elements: " + posVecPointsX + " " + posVecPointsY + " " + posVecPointsZ + " | ";
+            allposVecPoints = " -> posVecPoints elements: " + posVecPointsX + " " + posVecPointsY + " " + posVecPointsZ + " | ";
             s_send(sender, allposVecPoints);
         }       
 }
@@ -217,11 +219,13 @@ void ZMQClientComponent::attachingDataToSend(attachingData b)
 
 }
 
+/*
 BodyPointsToBeSent::BodyPointsToBeSent()
 {
 
 }
 
+/*
 void BodyPointsToBeSent::ProcessPtsToBeSent()
 {
     int sizeTempTotal = 50;
@@ -229,15 +233,15 @@ void BodyPointsToBeSent::ProcessPtsToBeSent()
 
     string deformationVectorK_X;
 
-    /* data en el llenado del vector PointNet, va a iterar por el valor de sizeTempTotal
-    en cada eje x,y,z por eso sizeTempTotal es 50 para que de 150  */
+    // data en el llenado del vector PointNet, va a iterar por el valor de sizeTempTotal
+    // en cada eje x,y,z por eso sizeTempTotal es 50 para que de 150 
     float data[150];
     vector<PointNet> vPoints;
     vPoints.resize(sizeTempTotal);
     int NbPointsMsg = 20;
     // startPoint = (int)data[0];
 
-    /* Llenamos el array de data */
+    // Llenamos el array de data 
     for (unsigned int i = 0; i < 150; i++)
     {
         data[i] = (float)i;
@@ -245,34 +249,35 @@ void BodyPointsToBeSent::ProcessPtsToBeSent()
 
     int cont = 0;
     
-    /* Llenamos el vector del total de puntos del organo vPoints 
-    basandonos en que no pasara de 50, por lo que ponemos sizeTempTotal 
-    como variable de control. Se incrementa en tres porque se va a llenar
-    el vector vPoints que es de tipo PointNet que tiene x,y,z en cada posicion  */
+    // Llenamos el vector del total de puntos del organo vPoints 
+    // basandonos en que no pasara de 50, por lo que ponemos sizeTempTotal 
+    // como variable de control. Se incrementa en tres porque se va a llenar
+    // el vector vPoints que es de tipo PointNet que tiene x,y,z en cada posicion  
     for (unsigned int i = 0; i <= sizeTempTotal; i += 3)
     {
         // Llenando el vector que contiene todos los puntos del organo
-        /* Creamos pTemp de tipo PointNet y a este le asignaremos los valores de data
-        por tres veces sizeTemp (que tiene tamaño 50), asi que completara su tamaño 150 */
+        // Creamos pTemp de tipo PointNet y a este le asignaremos los valores de data
+        // por tres veces sizeTemp (que tiene tamaño 50), asi que completara su 
+        // tamaño 150 
         PointNet pTemp(data[i], data[i + 1], data[i + 2]);
         // vNroPointC.push_back((int)data[i]);
 
-        /* Asignamos pTemp a vPoints que es en donde estarán todos los puntos de deformacion*/
+        // Asignamos pTemp a vPoints que es en donde estarán todos los puntos de deformacion 
         vPoints[i] = pTemp;
         
         // std::cout << "Guardando " << i << "punto por " << i << "ésima ocasión" << std::endl;
-        /* Guardamos cada elemento en la posicion cont de vPoints para cada x,y,z que posee en su estructura como
-        vector tipo PointNet*/
+        // Guardamos cada elemento en la posicion cont de vPoints para cada x,y,z que posee en su estructura como
+        // vector tipo PointNet
         std::cout << vPoints[cont].getX() << " " << vPoints[cont].getY() << " " << vPoints[cont].getZ() << std::endl;
         std::cout << vPoints.size() << std::endl;
         // std::cout << "Vector de puntos tiene" << vPoints << " \n\n" << std::endl;
         cont++;
     }
-    /*De esta manera nuestro vector vPoint que es el que contendra el numero tota de puntos de un
+    // De esta manera nuestro vector vPoint que es el que contendra el numero tota de puntos de un
     organo, ya esta lleno
     Realmente, este vector vPoints lo recibire de SOFA, por lo que aca en este metodo
     ProcessPtsToBeSent deberia es tener un metodo set vPoints que pueda ser usado desde SOFA y
-    mediante el se asigne ese vector que me pasan a vPoints y ahi ya empezar a construir el mensaje*/
+    mediante el se asigne ese vector que me pasan a vPoints y ahi ya empezar a construir el mensaje/
 
     //msgPointsGroupV3 msgTemp;
     msg.setNroTotalPoints((int)vPoints.size());
@@ -280,54 +285,54 @@ void BodyPointsToBeSent::ProcessPtsToBeSent()
     //           << endl;
 
 
-    /* Definimos unas variables temporales */
+    // Definimos unas variables temporales 
     
-    /* sizeTemp (20) para tenerla como control para el maximo d enumero de puntos por mensaje  */
+    // sizeTemp (20) para tenerla como control para el maximo d enumero de puntos por mensaje  
     int sizeTemp;
 
-    /* vPointsTemp que ira solo hasta 20 y en el almacenaremos el contenido de vPoints que
-    tendra 50 elementos, aca se parte  */
+    // vPointsTemp que ira solo hasta 20 y en el almacenaremos el contenido de vPoints que
+    tendra 50 elementos, aca se parte  //
     vector<PointNet> vPointsTemp; 
 
-    /* Mientras contador sea menor que mi vector de puntos vPoints (50) */
+    // Mientras contador sea menor que mi vector de puntos vPoints (50) //
     while(contador < vPoints.size())
     {
         if (contador == 0)
         {
-            /* Definimos que inicia el mensaje para el envio de datos de deformación*/
+            // Definimos que inicia el mensaje para el envio de datos de deformación /
             msg.setIDTypeMsgDef(1); // Start message
             
-            /* Definimos un tamaño temporal del mensaje igual al numero de puntos por mensaje NbPointsMsg*/
+            // Definimos un tamaño temporal del mensaje igual al numero de puntos por mensaje NbPointsMsg//
             sizeTemp = NbPointsMsg;
-            /*Inicializamos el vector vPointsTemp a 20 que es el numero maximo de puntos por mensaje.  */
+            //Inicializamos el vector vPointsTemp a 20 que es el numero maximo de puntos por mensaje.  //
             vPointsTemp.resize(sizeTemp);
 
-            /*  START message - Generando el mensaje inicial de 20 con sizeTemp como variable de control */
+            //  START message - Generando el mensaje inicial de 20 con sizeTemp como variable de control //
             for (unsigned int k = 0; k < sizeTemp; k++)
             {
-                /* vPointsTemp que ira solo hasta 20 y en el almacenaremos el contenido de vPoints que
-                    tendra 50 elementos, aca se parte  */
+                // vPointsTemp que ira solo hasta 20 y en el almacenaremos el contenido de vPoints que
+                    tendra 50 elementos, aca se parte  //
                 vPointsTemp[k] = vPoints[k];
             }
         }
-        /**
-         * FINISH 
-         * Para el mensaje final de que se terminaron de llenar la totalidad de puntos en vPoints
-         * Si contador +NbPointsMsg es igual o mayor que el total de puntos a enviar de mi vector vPoints 
-        */
+        
+        //FINISH 
+        //Para el mensaje final de que se terminaron de llenar la totalidad de puntos en vPoints
+        //Si contador +NbPointsMsg es igual o mayor que el total de puntos a enviar de mi vector vPoints 
+        
         else if((contador+NbPointsMsg) >= vPoints.size())
         {
-            /* tamaño temporal sizeTemp del mensaje = tamaño del vector totalpuntos vPoints - contador  */
+            // tamaño temporal sizeTemp del mensaje = tamaño del vector totalpuntos vPoints - contador  /
             sizeTemp = (vPoints.size() - contador);
 
-            /* Se inicializa vPointsTemp al tamaño que da sizeTemp, que seria lo que resta de enviar de puntos
-            que seria el mensaje final*/
+            // Se inicializa vPointsTemp al tamaño que da sizeTemp, que seria lo que resta de enviar de puntos
+            que seria el mensaje final//
             vPointsTemp.resize(sizeTemp);
 
-            /**
-             * Llenamos el vector con los ultimos puntos que faltan por ser enviados en el mensaje
-             * Como son los ultimos puntos que faltan por enviar, k siempre va a ser menor que vPoints(50)
-             * */
+            
+            //Llenamos el vector con los ultimos puntos que faltan por ser enviados en el mensaje
+            // Como son los ultimos puntos que faltan por enviar, k siempre va a ser menor que vPoints(50)
+            //
                 for (unsigned int k = contador; k < vPoints.size(); k++)
             {
                 vPointsTemp[k - contador] = vPoints[k];
@@ -339,28 +344,28 @@ void BodyPointsToBeSent::ProcessPtsToBeSent()
             }
         }
         else
-        /** Mensajes de abordamiento de puntos intermediarios - MIDDLE
-         * cuando contador es mayor a cero pero no mayor que el tamaño de puntos totales a enviar
-        */
+        // Mensajes de abordamiento de puntos intermediarios - MIDDLE
+        // cuando contador es mayor a cero pero no mayor que el tamaño de puntos totales a enviar
+        //
         {
-            /*Ponemos sizeTemp igual a maximo de puntos por mensaje NbPointsMsg */
+            //Ponemos sizeTemp igual a maximo de puntos por mensaje NbPointsMsg //
             sizeTemp = NbPointsMsg;
 
-            /*Inicializamos la variable temporal vPointsTemp al tamaño de maximo numero de puntos por mensaje */
+            //Inicializamos la variable temporal vPointsTemp al tamaño de maximo numero de puntos por mensaje //
             vPointsTemp.resize(sizeTemp);
 
-            /*Llenamos el vector vPoints con los mensajes intermediarios */
+            //Llenamos el vector vPoints con los mensajes intermediarios //
             for (unsigned int k = contador; k < (contador + NbPointsMsg); k++)
             {
                 vPointsTemp[k - contador] = vPoints[k];
             }
         }
 
-        /*incrementamos lo que tiene contador mas NbPointsMsg */
+        //incrementamos lo que tiene contador mas NbPointsMsg 
         contador+=NbPointsMsg;
     }
 }
-
+*/
 
 void ZMQClientComponent::init()
 {

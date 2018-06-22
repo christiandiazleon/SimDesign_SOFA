@@ -30,6 +30,7 @@ Se deben enviar los valores x,y, z (en el hapkit mandare solo uno. x pero pongo 
 Los quatrernions y el buttonState si fue presionado o no y el openInstrument si esta abierto o no
 todo lo de la estructura instrumentData
 */
+/*
 msgInstrumentPosition::msgInstrumentPosition()
 {
     instrumentPosition = 0.0;
@@ -44,16 +45,16 @@ bool msgInstrumentPosition::SetupSend()
 
     char myStringHapkitValue[30];
 }
-
+*/
 /*--------------------------------------msgPointsGroup-----------------------------------  */
-msgPointsGroupV3::msgPointsGroupV3()
+msgPointsGroup::msgPointsGroup()
 {
     NroPointsC = 0;
     startPoint = 0;
     NbPointsMsg = 20;
 }
 
-void msgPointsGroupV3::test()
+void msgPointsGroup::test()
 {
     std::cout << "Probando la instanciacion de clase" << std::endl;
     NroPointsC = 0;
@@ -62,11 +63,16 @@ void msgPointsGroupV3::test()
     PointsC.resize(20);
 }
 
+bool msgPointsGroup::SetupSend()
+{
+   //PointsC = objectsT 
+}
+/*
 bool msgPointsGroupV3::SetupReceive()
 {
 
-    /* Aca lo que debemos ahcer es convertirlo a string cada parte del mensaje
-    para que ZMQ lo envie.**/
+    //Aca lo que debemos ahcer es partir el mensaje que llega desde el sender
+    
 
 
 
@@ -87,30 +93,30 @@ bool msgPointsGroupV3::SetupReceive()
         // std::cout << "Guardando " << i << "punto por " << i << "ésima ocasión" << std::endl;
         // std::cout << PointsC[cont].getX() << " " << PointsC[cont].getY() << " " << PointsC[cont].getZ() << std::endl;
         // std::cout << PointsC.size() << std::endl;
-        /*
-        if (PointsC.size() == 20 )
-        {
-            std::cout << i << ". # máximo de puntos alcanzado." << std::endl;
-        }
-        */
+        
+        // if (PointsC.size() == 20 )
+        // {
+        //    std::cout << i << ". # máximo de puntos alcanzado." << std::endl;
+        // }
+        
        cont++;
     }
     // vector<PointNet> total(20, "empty");
-    /**
-     * Declaro el vector PointNet y proporciono
-     * el numero de elementos que deseo almacenar y
-     * el valor string por defecto empty
-    */
+    
+    // * Declaro el vector PointNet y proporciono
+    // * el numero de elementos que deseo almacenar y
+    // * el valor string por defecto empty
+    
 
-   /*
-    for(int i=0; i<=PointsC.size(); i++)
-    {
+   
+    // for(int i=0; i<=PointsC.size(); i++)
+    // {
         // total+=PointsC[i];
-        std::cout << "PointsC element is: " << PointsC[i] << std::endl;
-    }*/
+    //     std::cout << "PointsC element is: " << PointsC[i] << std::endl;
+    //}
     return true;
 }
-
+*/
 
 }
 
