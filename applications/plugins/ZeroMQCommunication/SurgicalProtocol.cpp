@@ -65,7 +65,7 @@ void msgPointsGroup::test()
 
 bool msgPointsGroup::SetupSend()
 {
-   //PointsC = objectsT 
+   std::cout << PointsC.size() << std::endl;
 }
 /*
 bool msgPointsGroupV3::SetupReceive()

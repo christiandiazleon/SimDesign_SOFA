@@ -379,6 +379,7 @@ void ZMQClientComponent::init()
     // Connecting to Nerwork Manager
     z.setupConnection();
     msg.test();
+    msg.SetupSend();
 
     /* We get the rootContext */
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
