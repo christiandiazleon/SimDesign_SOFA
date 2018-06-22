@@ -104,12 +104,18 @@ void ZMQClientComponent::hapkitDataSend()
 
 void ZMQClientComponent::deformationPointsSend()
 {
-    string posVecPointsX, posVecPointsY, posVecPointsZ;
+    string posVecPointsX, posVecPointsY, posVecPointsZ, allposVecPoints;
     vecPoints = objectsTetrahedral[0]->getVectorPoints();
-        if(vecPoints.size() > 0)
+    std::cout << "entrando a deformations: " << endl;
+        if(vecPoints.size() > 0){
             std::cout << vecPoints[0].getX() << " " << vecPoints[0].getY() << " " << vecPoints[0].getZ() << std::endl;
             posVecPointsX = to_string(vecPoints[0].getX());
             posVecPointsY = to_string(vecPoints[0].getY());
+            posVecPointsZ = to_string(vecPoints[0].getZ());
+            /* Concatenating all posVector elements */
+            allposVecPoints = " -> posVector3D elements: " + posVecPointsX + " " + posVecPointsY + " " + posVecPointsZ + " | ";
+            s_send(sender, allposVecPoints);
+        }       
 }
 
 
@@ -360,6 +366,15 @@ void ZMQClientComponent::init()
 {
     //fun();
 
+    std::cout << "ZeroMQCommunication::init()" << std::endl;
+    ZMQClientComponent z;
+    //msgPointsGroupV3 msg;
+
+
+    // Connecting to Nerwork Manager
+    z.setupConnection();
+    msg.test();
+
     /* We get the rootContext */
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node *>(this->getContext()->getRootContext());
     cout << "rootContext: " << rootContext << endl;
@@ -389,14 +404,7 @@ void ZMQClientComponent::init()
         
         //SerialDriver* s = new SerialDriver();
 
-        std::cout << "ZeroMQCommunication::init()" << std::endl;
-        ZMQClientComponent z;
-        //msgPointsGroupV3 msg;
-    
-
-        // Connecting to Nerwork Manager
-        z.setupConnection();
-        msg.test();
+        
     
     }
 
