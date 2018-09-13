@@ -8,6 +8,8 @@ def main():
     publisher = ctx.socket(zmq.PUB)
     publisher.bind("tcp://*:5557")
 
+    # To generate log messages 
+    # https://pyzmq.readthedocs.io/en/latest/api/zmq.log.handlers.html?highlight=handler 
     handler = PUBHandler(publisher)
     logger = logging.getLogger()
     logger.addHandler(handler)
